@@ -111,7 +111,7 @@ export const Route = createFileRoute("/api/hub/news")({
     handlers: {
       GET: async () => {
         try {
-          if (!cache || Date.now() - cache.at > TTL_MS) {
+          if (!cache || Date.now() - cache.at > TTL_MS || cache.data.length < 5) {
             cache = { at: Date.now(), data: await fetchNews() };
           }
           return Response.json(
