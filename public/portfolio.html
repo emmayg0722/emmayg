@@ -69,6 +69,11 @@ main{max-width:1180px;margin:0 auto;padding:24px 18px 120px}.page{display:none;a
   border-color:#1d1d1f !important;
   box-shadow:0 10px 22px rgba(20,24,32,.12) !important;
 }
+/* v49: category filters scroll horizontally in a single row */
+.model-filter-wrap .news-filter-row.category-row{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.model-filter-wrap .news-filter-row.category-row::-webkit-scrollbar{display:none}
+.model-filter-wrap .news-filter-row.category-row .news-filter{flex:0 0 auto}
+
 
 /* v23: prompt library is an up/down scrollable two-column list */
 .filter-row-label{display:none !important}
