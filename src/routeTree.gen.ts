@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiHubReposRouteImport } from './routes/api/hub/repos'
 import { Route as ApiHubNewsRouteImport } from './routes/api/hub/news'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiHubReposRoute = ApiHubReposRouteImport.update({
+  id: '/api/hub/repos',
+  path: '/api/hub/repos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiHubNewsRoute = ApiHubNewsRouteImport.update({
@@ -26,27 +32,31 @@ const ApiHubNewsRoute = ApiHubNewsRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/api/hub/news': typeof ApiHubNewsRoute
+  '/api/hub/repos': typeof ApiHubReposRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/api/hub/news': typeof ApiHubNewsRoute
+  '/api/hub/repos': typeof ApiHubReposRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/api/hub/news': typeof ApiHubNewsRoute
+  '/api/hub/repos': typeof ApiHubReposRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/api/hub/news'
+  fullPaths: '/' | '/api/hub/news' | '/api/hub/repos'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/api/hub/news'
-  id: '__root__' | '/' | '/api/hub/news'
+  to: '/' | '/api/hub/news' | '/api/hub/repos'
+  id: '__root__' | '/' | '/api/hub/news' | '/api/hub/repos'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ApiHubNewsRoute: typeof ApiHubNewsRoute
+  ApiHubReposRoute: typeof ApiHubReposRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/hub/repos': {
+      id: '/api/hub/repos'
+      path: '/api/hub/repos'
+      fullPath: '/api/hub/repos'
+      preLoaderRoute: typeof ApiHubReposRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/hub/news': {
@@ -71,6 +88,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ApiHubNewsRoute: ApiHubNewsRoute,
+  ApiHubReposRoute: ApiHubReposRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
