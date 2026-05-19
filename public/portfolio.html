@@ -424,16 +424,19 @@ main{max-width:1180px;margin:0 auto;padding:24px 18px 120px}.page{display:none;a
 .news-footer a:hover{text-decoration:underline}
 
 
-/* v48 compact AI Hub metadata rows */
-.news-footer{display:grid;gap:3px;line-height:1.35}
+/* v48 compact AI Hub metadata — single-row slow ticker */
+.news-footer{position:relative;overflow:hidden;line-height:1.35;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.news-footer .ticker-track{display:flex;width:max-content;gap:48px;animation:hub-ticker 90s linear infinite;will-change:transform}
+.news-footer:hover .ticker-track{animation-play-state:paused}
+.news-footer .ticker-content{display:inline-flex;align-items:center;gap:10px;white-space:nowrap;flex-shrink:0}
+.news-footer .ticker-content .sep{opacity:.45}
 .news-footer .footer-meta-primary,
-.news-footer .footer-meta-secondary{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-.news-footer .footer-meta-secondary{font-size:12.5px;opacity:.86}
+.news-footer .footer-meta-secondary{display:inline;white-space:nowrap;font-size:12.5px}
+.news-footer .footer-meta-secondary{opacity:.86}
 .news-footer a{white-space:nowrap}
-@media(max-width:760px){
-  .news-footer .footer-meta-primary,
-  .news-footer .footer-meta-secondary{white-space:normal;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical}
-}
+@keyframes hub-ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.news-footer .ticker-track{animation:none}}
+
 
 </style>
 </head>
@@ -2384,8 +2387,10 @@ function hubRefHtml(key){
 }
 function hubFooterHtml(key,countLabel,modeLabel,filterLabel=''){
  const refreshed=hubRefreshState[key]||hubStamp();
- return `<span class="footer-meta-primary">${countLabel} · ${modeLabel} · ${LT('Refreshed')}: ${refreshed}${filterLabel?` · ${filterLabel}`:''}</span>${hubRefHtml(key)}`;
+ const inner=`<span class="footer-meta-primary">${countLabel} · ${modeLabel} · ${LT('Refreshed')}: ${refreshed}${filterLabel?` · ${filterLabel}`:''}</span><span class="sep">·</span>${hubRefHtml(key)}`;
+ return `<div class="ticker-track"><div class="ticker-content">${inner}</div><div class="ticker-content" aria-hidden="true">${inner}</div></div>`;
 }
+
 
 function renderNews(isManual=false){
   const sources=['All',...new Set(news.map(n=>n.source))];
