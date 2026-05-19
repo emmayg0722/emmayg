@@ -2387,8 +2387,10 @@ function hubRefHtml(key){
 }
 function hubFooterHtml(key,countLabel,modeLabel,filterLabel=''){
  const refreshed=hubRefreshState[key]||hubStamp();
- return `<span class="footer-meta-primary">${countLabel} · ${modeLabel} · ${LT('Refreshed')}: ${refreshed}${filterLabel?` · ${filterLabel}`:''}</span>${hubRefHtml(key)}`;
+ const inner=`<span class="footer-meta-primary">${countLabel} · ${modeLabel} · ${LT('Refreshed')}: ${refreshed}${filterLabel?` · ${filterLabel}`:''}</span><span class="sep">·</span>${hubRefHtml(key)}`;
+ return `<div class="ticker-track"><div class="ticker-content">${inner}</div><div class="ticker-content" aria-hidden="true">${inner}</div></div>`;
 }
+
 
 function renderNews(isManual=false){
   const sources=['All',...new Set(news.map(n=>n.source))];
