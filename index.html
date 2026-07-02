@@ -819,9 +819,11 @@ main{flex:1 0 auto}
 
 /* v56 fix: grid/flex items default to min-width:auto, which let horizontally-scrolling
    rows (news filters, tabs, etc.) force their whole grid/flex ancestor chain wider than
-   the viewport on phones. Resetting min-width lets those rows scroll within their own
-   box instead of blowing out the page. */
-*{min-width:0}
+   the viewport on phones. Resetting min-width on layout containers lets those rows
+   scroll within their own box instead of blowing out the page. Scoped to block-level
+   wrapper tags only (not button/a) so the pills and tabs inside those scrolling rows
+   keep their content-based width instead of being squeezed to fit. */
+div,section,article,main,header,footer,nav,ul,ol,li{min-width:0}
 
 </style>
 </head>
@@ -2794,9 +2796,9 @@ function rerenderLocalized(){
 function setLang(l){lang=l;langMenu.classList.remove('open');langBtn.textContent=l.toUpperCase()+' ▾';applyLang()}function applyLang(){const t=translations[lang];document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=t[el.dataset.i18n]||el.textContent});document.querySelectorAll('[data-tab]').forEach(b=>{b.textContent=t[b.dataset.tab]||b.textContent});rerenderLocalized()}
 
 const hubDataMeta={
- news:{updated:'June 06, 2026',ref:'Exact source URLs · ranked by newest + editorial importance',links:[['Source articles','#']]},
+ news:{updated:'June 06, 2026',ref:'Live headlines pulled from Hacker News (Algolia API), filtered to AI-related stories · ranked by newest + points',links:[['Hacker News','https://news.ycombinator.com/']]},
  models:{updated:'June 06, 2026',ref:'Updated from Artificial Analysis Intelligence Index, LMArena overview, OpenRouter usage rankings, access type, category fit, and product usefulness',links:[['Artificial Analysis','https://artificialanalysis.ai/leaderboards/models'],['LMArena','https://huggingface.co/spaces/lmarena-ai/arena-leaderboard'],['OpenRouter','https://openrouter.ai/']]},
- repos:{updated:'June 06, 2026',ref:'Curated from GitHub Trending, AI topic popularity, repo relevance, and practical developer utility',links:[['GitHub Trending','https://github.com/trending'],['GitHub AI Topic','https://github.com/topics/ai']]},
+ repos:{updated:'June 06, 2026',ref:'Live from the GitHub Search API · repos tagged "ai", pushed in the last 30 days, sorted by stars',links:[['GitHub Trending','https://github.com/trending'],['GitHub AI Topic','https://github.com/topics/ai']]},
  skills:{updated:'June 06, 2026',ref:'Curated applied AI skills from prompt engineering, enterprise AI workflows, and practical AI product delivery',links:[['OpenAI Prompting','https://developers.openai.com/api/docs/guides/prompt-engineering'],['Prompt Engineering Guide','https://www.promptingguide.ai/']]}
 };
 const hubRefreshState={news:null,models:null,repos:null,skills:null};
@@ -2830,10 +2832,9 @@ function manualRefreshNews(){
   if(btn){btn.classList.add('spinning');btn.disabled=true;}
   newsRefreshTick++;
   hubRefreshState.news=hubStamp();
-  setTimeout(()=>{
-    renderNews(true);
+  loadLiveNews(true).finally(()=>{
     if(btn){btn.classList.remove('spinning');btn.disabled=false;}
-  },380);
+  });
 }
 function modelFilterClass(c){const x=c.toLowerCase();if(x.includes('frontier'))return 'cat-frontier';if(x.includes('open'))return 'cat-open';if(x.includes('coding')||x.includes('local'))return 'cat-code';if(x.includes('creative'))return 'cat-creative';if(x.includes('research'))return 'cat-research';if(x.includes('productivity')||x.includes('automation')||x.includes('platform'))return 'cat-product';if(x.includes('data')||x.includes('rag'))return 'cat-data';if(x.includes('image')||x.includes('video')||x.includes('audio'))return 'cat-media';return ''}
 function renderModels(){
@@ -2865,7 +2866,7 @@ function renderRepos(){
  if(!hubRefreshState.skills)hubRefreshState.skills=hubStamp(); if(window.skillFooter)skillFooter.innerHTML=hubFooterHtml('skills',`${visibleSkills.length} ${LT('skills shown')}`,LT('applied taxonomy'),`${LT('Filter')}: ${LT(skillCategory)}`)
 }
 
-function manualRefreshRepos(){const btn=document.getElementById('repoRefreshBtn');btn?.classList.add('spinning');hubRefreshState.repos=hubStamp();renderRepos();repoList.scrollTop=0;repoList.querySelectorAll('.feed-item').forEach((el,i)=>{if(i<3){el.classList.add('flash');setTimeout(()=>el.classList.remove('flash'),900)}});setTimeout(()=>btn?.classList.remove('spinning'),650)}
+function manualRefreshRepos(){const btn=document.getElementById('repoRefreshBtn');btn?.classList.add('spinning');hubRefreshState.repos=hubStamp();loadLiveRepos(true).finally(()=>{repoList.scrollTop=0;repoList.querySelectorAll('.feed-item').forEach((el,i)=>{if(i<3){el.classList.add('flash');setTimeout(()=>el.classList.remove('flash'),900)}});btn?.classList.remove('spinning')})}
 function manualRefreshSkills(){const btn=document.getElementById('skillRefreshBtn');btn?.classList.add('spinning');hubRefreshState.skills=hubStamp();renderRepos();skillList.scrollTop=0;skillList.querySelectorAll('.feed-item').forEach((el,i)=>{if(i<3){el.classList.add('flash');setTimeout(()=>el.classList.remove('flash'),900)}});setTimeout(()=>btn?.classList.remove('spinning'),650)}
 function renderPrompts(){
  const cats=['All',...new Set(prompts.map(p=>p.cat))];
@@ -3186,7 +3187,88 @@ function pillarByIndex(n){const i=((n%60)+60)%60;return stems[i%10]+branches[i%1
 function calculateBaziDemo(){const d=document.getElementById('baziDate').value;const t=document.getElementById('baziTime').value||'12:00';const place=document.getElementById('baziPlace').value||'Unknown place';if(!d){return}const date=new Date(d+'T'+t);const year=date.getFullYear();const yearP=pillarByIndex(year-1984);const monthP=pillarByIndex((year-1984)*12+date.getMonth()+2);const base=new Date('1984-02-02T00:00:00');const days=Math.floor((date-base)/86400000);const dayP=pillarByIndex(days);const hour=parseInt(t.split(':')[0],10);const branchIdx=Math.floor(((hour+1)%24)/2);const hourP=stems[((days%5)*2+branchIdx)%10]+branches[branchIdx];const all=(yearP+monthP+dayP+hourP).split('');const counts={Wood:0,Fire:0,Earth:0,Metal:0,Water:0};all.forEach(ch=>{if(elements[ch])counts[elements[ch]]++});const strongest=Object.entries(counts).sort((a,b)=>b[1]-a[1])[0][0];const score=Math.min(92,56+counts[strongest]*6+(place.length%9));const weekScore=Math.min(95,Math.max(38,score-7+(days%13)));const monthScore=Math.min(95,Math.max(36,score-4+((date.getMonth()+place.length)%11)));const supportive={Wood:'learning, planning, writing, networks, growth work',Fire:'visibility, presentations, creative launch, social momentum',Earth:'structure, real estate, family alignment, financial grounding',Metal:'contracts, compliance, decision discipline, system cleanup',Water:'research, travel planning, reflection, flexible strategy'}[strongest];document.getElementById('baziResult').style.display='block';document.getElementById('baziResult').innerHTML=`<h4>${LT('Your BaZi profile')}</h4><div class="bazi-pill-row"><span class="bazi-mini-pill">Year 年柱 ${yearP}</span><span class="bazi-mini-pill">Month 月柱 ${monthP}</span><span class="bazi-mini-pill">Day 日柱 ${dayP}</span><span class="bazi-mini-pill">Hour 时柱 ${hourP}</span></div><div class="destiny-meter"><span style="width:${score}%"></span></div><p class="small"><strong>${LT('Dominant element')}:</strong> ${strongest}. <strong>${LT('Today’s tendency')}:</strong> good for structured planning, careful negotiation, family alignment, and quiet reflection. Avoid impulsive relocation, unnecessary conflict, and high-risk water activities.</p><div class="bazi-pill-row"><span class="bazi-mini-pill">Today 今日 ${score}%</span><span class="bazi-mini-pill">${LT('Recent week')} 近七日 ${weekScore}%</span><span class="bazi-mini-pill">${LT('Recent month')} 近一月 ${monthScore}%</span></div><p class="small"><strong>${LT('Recent week')}:</strong> focus on ${supportive}; keep decisions practical and avoid scattered commitments.</p><p class="small"><strong>${LT('Recent month')}:</strong> strongest support comes from steady routines, relationship repair, document cleanup, and disciplined project selection.</p><p class="small" style="margin-top:8px"><strong>${LT('Place context')}:</strong> ${place}. This application uses real pillar logic; production BaZi uses solar-term calendar precision and timezone handling.</p>`}
 function openProjectByIndex(i){const p=projects[i];if(!p)return;modalTitle.textContent=p.title;modal.classList.remove('feng-modal');modalBody.innerHTML=projectDetailTemplate(p,'privacy');modal.classList.add('open')}
 function openProject(title){const i=projects.findIndex(x=>x.title===title);openProjectByIndex(i)}function closeModal(){modal.classList.remove('open');modal.classList.remove('feng-modal')}function closeModalOutside(e){if(e.target.id==='modal')closeModal()}
-function boot(){initTabs();renderNews();renderModels();renderRepos();renderPrompts();renderCompass();renderPlaybooks();renderProjects();applyLang();handlePolicyHash()}boot();window.addEventListener("hashchange",handlePolicyHash);
+
+// --- Live data (client-side only, keyless public APIs, no server / API key required) ---
+// AI News: Hacker News Algolia search API. AI Repos: GitHub public search API.
+// Both calls run from the visitor's own browser, so GitHub's unauthenticated rate limits
+// apply per-visitor, not shared across the whole site. Failures fall back silently to the
+// curated `news`/`repos` arrays already in this file, so the page never shows a blank state.
+const LIVE_CACHE_TTL=10*60*1000;
+function liveCacheGet(key){
+  try{const c=JSON.parse(localStorage.getItem(key)||'null');if(c&&Date.now()-c.at<LIVE_CACHE_TTL)return c.data}catch(e){}
+  return null;
+}
+function liveCacheSet(key,data){try{localStorage.setItem(key,JSON.stringify({at:Date.now(),data}))}catch(e){}}
+
+async function fetchLiveNews(force){
+  if(!force){const cached=liveCacheGet('liveNewsCache');if(cached)return cached}
+  const KW=/\b(ai|llm|gpt|claude|anthropic|openai|gemini|mistral|llama|grok|deepseek|agent|agentic|rag|diffusion|stable diffusion|midjourney|sora|copilot|huggingface|transformer|ml model|neural)\b/i;
+  const queries=["AI","LLM","GPT","OpenAI","Anthropic","Gemini","agent"];
+  const urls=[
+    ...queries.map(q=>`https://hn.algolia.com/api/v1/search_by_date?query=${encodeURIComponent(q)}&tags=story&numericFilters=points%3E10&hitsPerPage=30`),
+    `https://hn.algolia.com/api/v1/search?query=${encodeURIComponent('AI OR LLM OR GPT OR OpenAI OR Anthropic OR Gemini')}&tags=story&numericFilters=points%3E30&hitsPerPage=50`,
+  ];
+  const results=await Promise.allSettled(urls.map(u=>fetch(u).then(r=>{if(!r.ok)throw new Error('HN '+r.status);return r.json()})));
+  const all=[];
+  for(const r of results) if(r.status==='fulfilled') all.push(...(r.value.hits||[]));
+  const seen=new Set(),items=[];
+  for(const h of all){
+    if(seen.has(h.objectID))continue; seen.add(h.objectID);
+    const title=h.title||h.story_title||''; if(!title||!KW.test(title))continue;
+    const link=h.url||h.story_url||`https://news.ycombinator.com/item?id=${h.objectID}`;
+    const pts=h.points??0, created=h.created_at_i??Date.now()/1000;
+    let host='Web'; try{host=new URL(link).hostname.replace(/^www\./,'')}catch(e){}
+    const diff=Date.now()/1000-created;
+    const time=diff<3600?`${Math.max(1,Math.round(diff/60))}m ago`:diff<86400?`${Math.round(diff/3600)}h ago`:diff<86400*2?'Today':`${Math.round(diff/86400)}d ago`;
+    items.push({source:host,tag:'AI',importance:pts>=200?'Critical':'High',time,metric:`${pts} pts · ${h.num_comments??0} comments`,title,summary:'',url:link,rank:pts,dateRank:created});
+  }
+  items.sort((a,b)=>b.dateRank-a.dateRank);
+  const data=items.slice(0,20);
+  if(data.length)liveCacheSet('liveNewsCache',data);
+  return data;
+}
+async function loadLiveNews(isManual=false){
+  try{
+    const data=await fetchLiveNews(isManual);
+    if(data&&data.length){news.length=0;news.push(...data);newsSourceFilter='All'}
+  }catch(e){console.warn('Live AI News fetch failed, showing curated fallback',e)}
+  renderNews(isManual);
+}
+
+function categorizeRepo(topics,desc){
+  const t=(topics||[]).map(x=>x.toLowerCase()), d=(desc||'').toLowerCase();
+  const hit=k=>t.includes(k)||d.includes(k);
+  if(hit('agent')||hit('agents'))return 'Agents';
+  if(hit('rag')||hit('retrieval'))return 'RAG';
+  if(hit('llm')||hit('language-model'))return 'LLM';
+  if(hit('ollama')||hit('llama')||hit('local'))return 'Local LLM';
+  if(hit('image')||hit('diffusion')||hit('stable-diffusion'))return 'Image';
+  if(hit('video'))return 'Video';
+  if(hit('voice')||hit('speech')||hit('tts'))return 'Voice';
+  if(hit('framework'))return 'Framework';
+  if(hit('dataset'))return 'Dataset';
+  return 'AI';
+}
+async function fetchLiveRepos(force){
+  if(!force){const cached=liveCacheGet('liveReposCache');if(cached)return cached}
+  const since=new Date(Date.now()-30*86400*1000).toISOString().slice(0,10);
+  const q=encodeURIComponent(`topic:ai pushed:>${since}`);
+  const res=await fetch(`https://api.github.com/search/repositories?q=${q}&sort=stars&order=desc&per_page=20`,{headers:{Accept:'application/vnd.github+json'}});
+  if(!res.ok)throw new Error('GitHub '+res.status);
+  const json=await res.json();
+  const data=(json.items||[]).slice(0,20).map(r=>[r.name,categorizeRepo(r.topics,r.description),r.description||r.full_name,r.html_url]);
+  if(data.length)liveCacheSet('liveReposCache',data);
+  return data;
+}
+async function loadLiveRepos(isManual=false){
+  try{
+    const data=await fetchLiveRepos(isManual);
+    if(data&&data.length){repos.length=0;repos.push(...data);repoCategory='All'}
+  }catch(e){console.warn('Live AI Repos fetch failed, showing curated fallback',e)}
+  renderRepos();
+}
+
+function boot(){initTabs();renderNews();renderModels();renderRepos();renderPrompts();renderCompass();renderPlaybooks();renderProjects();applyLang();handlePolicyHash();loadLiveNews();loadLiveRepos()}boot();window.addEventListener("hashchange",handlePolicyHash);
 
 applyInitialHash();
 </script>
