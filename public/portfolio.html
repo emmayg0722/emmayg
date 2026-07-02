@@ -69,11 +69,6 @@ main{max-width:1180px;margin:0 auto;padding:24px 18px 120px}.page{display:none;a
   border-color:#1d1d1f !important;
   box-shadow:0 10px 22px rgba(20,24,32,.12) !important;
 }
-/* v49: category filters scroll horizontally in a single row */
-.model-filter-wrap .news-filter-row.category-row{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-.model-filter-wrap .news-filter-row.category-row::-webkit-scrollbar{display:none}
-.model-filter-wrap .news-filter-row.category-row .news-filter{flex:0 0 auto}
-
 
 /* v23: prompt library is an up/down scrollable two-column list */
 .filter-row-label{display:none !important}
@@ -429,28 +424,413 @@ main{max-width:1180px;margin:0 auto;padding:24px 18px 120px}.page{display:none;a
 .news-footer a:hover{text-decoration:underline}
 
 
-/* v48 compact AI Hub metadata — single-row slow ticker */
-.news-footer{position:relative;overflow:hidden;line-height:1.35;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
-.news-footer .ticker-track{display:flex;width:max-content;gap:48px;animation:hub-ticker 90s linear infinite;will-change:transform}
-.news-footer:hover .ticker-track{animation-play-state:paused}
-.news-footer .ticker-content{display:inline-flex;align-items:center;gap:10px;white-space:nowrap;flex-shrink:0}
-.news-footer .ticker-content .sep{opacity:.45}
+/* v48 compact AI Hub metadata rows */
+.news-footer{display:grid;gap:3px;line-height:1.35}
 .news-footer .footer-meta-primary,
-.news-footer .footer-meta-secondary{display:inline;white-space:nowrap;font-size:12.5px}
-.news-footer .footer-meta-secondary{opacity:.86}
+.news-footer .footer-meta-secondary{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.news-footer .footer-meta-secondary{font-size:12.5px;opacity:.86}
 .news-footer a{white-space:nowrap}
-@keyframes hub-ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-@media(prefers-reduced-motion:reduce){.news-footer .ticker-track{animation:none}}
+@media(max-width:760px){
+  .news-footer .footer-meta-primary,
+  .news-footer .footer-meta-secondary{white-space:normal;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical}
+}
 
+
+/* v49 Caroline policy pages */
+.bg-caroline{background:linear-gradient(180deg,rgba(0,0,0,.20),rgba(0,0,0,.42)),radial-gradient(circle at 34% 32%,rgba(255,255,255,.85) 0 8%,transparent 8.2%),radial-gradient(circle at 70% 35%,rgba(255,255,255,.80) 0 7%,transparent 7.2%),radial-gradient(circle at 51% 64%,rgba(255,255,255,.78) 0 7%,transparent 7.2%),linear-gradient(135deg,#ff8b8b,#ffd6a5 52%,#c4b5fd) !important}
+.policy-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.policy-card{border:1px solid rgba(120,130,155,.14);background:rgba(255,255,255,.78);border-radius:22px;padding:16px}
+.policy-card h3{margin-bottom:8px}.policy-card p,.policy-card li{font-size:13px;line-height:1.55;color:var(--muted)}
+.policy-card ul{margin-left:18px;display:grid;gap:6px}.policy-link-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.policy-link{display:inline-flex;align-items:center;gap:6px;padding:9px 13px;border-radius:999px;background:#111;color:#fff;text-decoration:none;font-size:12px;font-weight:850;border:0;cursor:pointer}.policy-link.secondary{background:#eef3fb;color:#245b94}
+@media(max-width:800px){.policy-grid{grid-template-columns:1fr}}
+
+
+/* v50 responsive polish for desktop + mobile */
+:root{--page-pad:18px}
+html,body{width:100%;max-width:100%;overflow-x:hidden}
+img,svg,video,canvas{max-width:100%}
+main{width:min(1180px,100%);padding-left:var(--page-pad);padding-right:var(--page-pad)}
+.nav{width:min(1180px,100%);padding-left:var(--page-pad);padding-right:var(--page-pad)}
+.section,.ai-news-shell,.card,.hero{max-width:100%}
+.feed-title,.feed-meta,.small,.lead,p,h1,h2,h3{overflow-wrap:anywhere}
+.news-filter-row,.filters,.compass-tabs{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.news-filter-row::-webkit-scrollbar,.filters::-webkit-scrollbar,.compass-tabs::-webkit-scrollbar{display:none}
+.feed-arrow{flex:0 0 auto}
+.model-filter-row{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+.model-filter-row::-webkit-scrollbar{display:none}
+.project-modal-grid,.industry-modal-grid{max-width:100%}
+
+@media (min-width:901px){
+  .mobile-nav{display:none !important}
+  .desktopTabs{display:flex}
+  .page{min-height:calc(100vh - 170px)}
+}
+
+@media (max-width:900px){
+  :root{--page-pad:14px}
+  body{background:radial-gradient(circle at 10% -4%,rgba(90,200,250,.22),transparent 30%),radial-gradient(circle at 92% 6%,rgba(124,108,255,.16),transparent 28%),linear-gradient(180deg,#fbfdff 0%,#f8faff 55%,#fff 100%)}
+  .nav{top:8px;margin-top:8px;gap:8px;align-items:center}
+  .logo{padding:9px 12px;max-width:48vw;overflow:hidden}
+  .logo span:last-child{display:inline;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .nav-right{gap:7px}
+  .tabbar{display:none !important}
+  .lang button{padding:8px 10px;font-size:12px;background:rgba(255,255,255,.82)}
+  .lang-menu{right:0;top:40px}
+  main{padding-top:12px;padding-bottom:122px}
+  .hero{margin:22px 0 20px;padding:24px;border-radius:28px}
+  .hero:after{right:-130px;top:-140px;width:280px;height:280px}
+  .eyebrow{font-size:11px;margin-bottom:10px}
+  h1{font-size:clamp(2.1rem,13vw,3.5rem);letter-spacing:-.055em;line-height:1}
+  .lead{font-size:1rem;line-height:1.55}
+  .split,.grid.two,.grid.three,.grid.four,.profile,.contact-grid,.project-modal-grid,.industry-modal-grid,.enterprise-grid-2{grid-template-columns:1fr !important}
+  .section{margin:24px 0}
+  .section-head{align-items:flex-start;flex-direction:column;gap:8px;margin-bottom:12px}
+  .section-head h2{font-size:1.45rem}
+  .card{padding:17px;border-radius:22px}
+  .robot{position:relative;top:auto;width:100%;border-radius:24px;padding:18px}
+  .ai-news-shell{border-radius:24px}
+  .ai-news-top{padding:12px 14px 8px;align-items:flex-start}
+  .ai-news-label{font-size:12px;letter-spacing:.12em}
+  .live-pill{font-size:12px;padding:6px 10px}
+  .refresh-btn{padding:4px 7px}
+  .news-filter-row{padding:8px 14px 12px;gap:7px}
+  .news-filter{font-size:12px;padding:7px 12px}
+  .news-feed-box{max-height:360px}
+  .feed-item{padding:13px 15px;gap:10px;align-items:flex-start}
+  .feed-title{display:inline;font-size:13.5px;line-height:1.42}
+  .feed-source-pill{font-size:9.5px;padding:4px 7px;margin-right:6px}
+  .feed-meta{gap:7px;font-size:11px;line-height:1.35}
+  .feed-importance{font-size:10px;padding:3px 7px}
+  .news-footer{padding:10px 14px 14px;font-size:12px;line-height:1.35}
+  .news-footer .footer-meta-primary,.news-footer .footer-meta-secondary{
+    white-space:normal !important;
+    display:-webkit-box !important;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:1;
+    overflow:hidden;
+  }
+  .model-filter-wrap{padding:4px 14px 10px}
+  .model-feed{max-height:380px}
+  .stack-section{display:grid;gap:18px}
+  .prompt-scroll{grid-template-columns:1fr !important;max-height:620px;padding-right:6px}
+  .compass-tabs{display:flex;gap:8px;flex-wrap:nowrap;padding-bottom:4px}
+  .compass-tabs .filter{white-space:nowrap;flex:0 0 auto}
+  .search{font-size:14px;padding:13px 15px;border-radius:18px}
+  .timeline{gap:10px}
+  .history-entry{grid-template-columns:76px 1fr 14px;padding:13px;border-radius:18px}
+  .history-entry .history-main strong{font-size:13.5px}
+  .history-entry .history-main p{font-size:12px}
+  .date{font-size:11px}
+  .mobile-nav{
+    display:flex !important;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    grid-template-columns:none !important;
+    left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));
+    border-radius:24px;
+    padding:7px;
+    gap:5px;
+  }
+  .mobile-nav::-webkit-scrollbar{display:none}
+  .mobile-nav button{
+    flex:0 0 auto;
+    min-width:72px;
+    padding:9px 10px;
+    font-size:10.5px;
+  }
+  .site-footer{padding:20px 18px 112px;gap:6px}
+}
+
+@media (max-width:760px){
+  .modal{align-items:flex-end;padding:0;background:rgba(25,30,45,.34)}
+  .modal-box{width:100%;max-height:92dvh;border-radius:26px 26px 0 0}
+  .modal-head{padding:14px 16px}
+  .modal-body{padding:16px}
+  .landscape-hero{grid-template-columns:44px 1fr;gap:12px}
+  .landscape-big-icon{width:44px;height:44px;border-radius:16px;font-size:22px}
+  .human-hero-card{grid-template-columns:1fr !important;min-height:auto;padding:24px}
+  .human-hero-photo{justify-self:start;width:132px !important;height:132px !important}
+  .human-meta-row{gap:8px}
+  .human-meta-row span{font-size:12px;padding:8px 10px}
+  .contact-panel{padding:20px;border-radius:24px}
+  .contact-link-card{padding:15px;border-radius:20px}
+  .cd-shelf{overflow-x:auto;gap:0;padding:8px 8px 22px;scroll-snap-type:x mandatory}
+  .cd-card{width:min(78vw,280px) !important;min-width:min(78vw,280px) !important;margin-right:10px !important}
+  .cd-card:hover{width:min(82vw,300px) !important;min-width:min(82vw,300px) !important}
+  .project-open{width:100%;justify-content:center}
+  .policy-grid{grid-template-columns:1fr !important}
+}
+
+@media (max-width:640px){
+  :root{--page-pad:12px}
+  .logo{max-width:52vw}
+  .logo-mark{width:26px;height:26px}
+  .hero{padding:20px;border-radius:24px}
+  h1{font-size:clamp(2rem,12vw,3rem)}
+  .ai-news-top{gap:8px}
+  .ai-news-top>div:last-child{gap:6px !important}
+  .feed-item{flex-direction:column}
+  .feed-arrow{align-self:flex-end;margin-top:-26px}
+  .news-feed-box{max-height:330px}
+  .news-footer .footer-meta-primary,.news-footer .footer-meta-secondary{-webkit-line-clamp:2}
+  .grid{gap:12px}
+  .industry-stack-layout{grid-template-columns:1fr !important;gap:16px}
+  .industry-stack-side{position:static !important}
+  .industry-stack-heading{font-size:1.55rem;margin-bottom:12px}
+  .industry-stack-3d{min-height:510px !important;padding:0 0 12px !important}
+  .stack-slab{left:0 !important;right:18px !important;height:56px !important}
+  .stack-slab-top{font-size:12px;padding:10px 12px}
+  .stack-slab-top small{font-size:9px}
+  .stack-slab-front{height:14px;bottom:-14px}
+  .stack-slab-right{height:44px;width:14px;right:-13px}
+  .industry-board{border-radius:22px}
+  .industry-board-head{padding:15px;flex-direction:column}
+  .industry-board-head h3{font-size:1.15rem}
+  .industry-board-head p{font-size:12.5px}
+  .industry-board-body{padding:12px}
+  .industry-category-map{grid-template-columns:1fr !important;gap:10px}
+  .industry-category-card{border-radius:18px;padding:12px}
+  .industry-chip-cloud{max-height:72px;overflow:hidden}
+  .enterprise-map-section{padding:14px !important;border-radius:24px !important}
+  .enterprise-map-head{gap:10px}
+  .enterprise-map-shell{overflow-x:auto}
+  .enterprise-map-shell svg{min-width:820px !important}
+}
+
+@media (max-width:420px){
+  .mobile-nav button{min-width:66px;font-size:10px;padding:8px 8px}
+  .lang button{font-size:11px}
+  .logo{padding:8px 10px}
+  .hero{margin-top:18px}
+  .section-head h2{font-size:1.3rem}
+  .feed-title{font-size:13px}
+  .news-filter{font-size:11.5px;padding:6px 10px}
+  .human-hero-photo{width:118px !important;height:118px !important}
+}
+
+
+/* v51 mobile visible tab selector */
+@media (max-width:900px){
+  .nav{
+    position:sticky;
+    top:8px;
+    flex-wrap:wrap;
+    align-items:center;
+    z-index:80;
+  }
+  .nav-right{
+    width:100%;
+    order:2;
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:8px;
+    align-items:center;
+  }
+  .tabbar,
+  .desktopTabs{
+    display:flex !important;
+    width:100%;
+    max-width:100%;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    border-radius:24px;
+    justify-content:flex-start;
+    padding:6px;
+    background:rgba(255,255,255,.82);
+  }
+  .tabbar::-webkit-scrollbar,
+  .desktopTabs::-webkit-scrollbar{display:none}
+  .nav-tab{
+    flex:0 0 auto;
+    padding:9px 13px;
+    font-size:12px;
+  }
+  .lang{
+    order:3;
+    justify-self:end;
+  }
+  main{padding-top:8px}
+}
+@media (max-width:520px){
+  .nav{padding-left:10px;padding-right:10px}
+  .logo{order:1;max-width:100%;width:auto}
+  .nav-right{grid-template-columns:1fr auto}
+  .nav-tab{font-size:11.5px;padding:8px 11px}
+  .tabbar,.desktopTabs{border-radius:22px}
+}
+
+
+/* v52: visible mobile tabs + real page-bottom footer */
+body{display:flex;flex-direction:column}
+main{flex:1 0 auto}
+.site-footer{flex-shrink:0;margin-top:auto}
+@media(max-width:900px){
+  .nav{position:sticky;top:8px;z-index:120}
+  .nav-right{display:flex !important;width:100%;gap:8px;align-items:center}
+  #desktopTabs.tabbar{
+    display:flex !important;
+    flex:1 1 auto;
+    min-width:0;
+    height:auto !important;
+    min-height:46px;
+    overflow-x:auto;
+    overflow-y:hidden;
+    background:rgba(255,255,255,.88) !important;
+    border:1px solid rgba(120,130,155,.22) !important;
+    box-shadow:0 12px 30px rgba(43,72,120,.10);
+  }
+  #desktopTabs .nav-tab{
+    display:inline-flex !important;
+    align-items:center;
+    justify-content:center;
+    flex:0 0 auto;
+    color:#6e7480;
+    background:transparent;
+    min-width:max-content;
+  }
+  #desktopTabs .nav-tab.active{background:#fff;color:#0071e3}
+  .lang{flex:0 0 auto}
+  main{padding-bottom:28px}
+  .site-footer{margin-top:28px;padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+}
+@media(max-width:520px){
+  #desktopTabs.tabbar{min-height:44px;padding:5px;border-radius:999px}
+  #desktopTabs .nav-tab{font-size:11.5px;padding:8px 11px}
+  .nav-right{grid-template-columns:none !important}
+}
+
+
+/* v53 force tab page switching on mobile/desktop */
+.page{display:none !important}
+.page.active{display:block !important}
+
+
+/* v54 top-only navigation */
+.mobile-nav{display:none !important}
+
+@media(max-width:900px){
+  .nav{
+    position:sticky;
+    top:8px;
+    z-index:130;
+    display:grid !important;
+    grid-template-columns:1fr auto;
+    grid-template-areas:
+      "logo lang"
+      "tabs tabs";
+    gap:10px 8px;
+    align-items:center;
+    padding:0 12px;
+    margin-top:8px;
+  }
+  .logo{
+    grid-area:logo;
+    width:max-content;
+    max-width:70vw;
+    justify-self:start;
+  }
+  .nav-right{
+    display:contents !important;
+    width:auto !important;
+  }
+  .lang{
+    grid-area:lang;
+    justify-self:end;
+    align-self:center;
+  }
+  #desktopTabs.tabbar{
+    grid-area:tabs;
+    display:flex !important;
+    width:100%;
+    max-width:100%;
+    overflow-x:auto;
+    overflow-y:hidden;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+    padding:6px;
+    border-radius:999px;
+    background:rgba(255,255,255,.86) !important;
+    border:1px solid rgba(120,130,155,.22) !important;
+    box-shadow:0 14px 34px rgba(43,72,120,.12);
+  }
+  #desktopTabs.tabbar::-webkit-scrollbar{display:none}
+  #desktopTabs .nav-tab{
+    flex:0 0 auto;
+    min-width:max-content;
+    padding:9px 13px;
+    font-size:12px;
+  }
+  main{padding-bottom:34px !important}
+  .site-footer{
+    padding-bottom:24px !important;
+    margin-top:auto !important;
+  }
+}
+
+@media(max-width:520px){
+  .nav{
+    grid-template-columns:1fr auto;
+    gap:9px 8px;
+    padding:0 10px;
+  }
+  .logo{
+    max-width:68vw;
+    padding:9px 13px;
+  }
+  .logo span:last-child{
+    display:inline !important;
+  }
+  #desktopTabs .nav-tab{
+    font-size:11.5px;
+    padding:8px 11px;
+  }
+  .lang button{
+    padding:9px 12px;
+    border-radius:999px;
+  }
+}
+
+
+
+/* v55 portfolio legal tabs + one-column project modal */
+.project-detail-one{display:grid;grid-template-columns:1fr;gap:16px;max-width:100%}
+.project-top-card{display:flex;align-items:flex-start;gap:16px;padding:20px;border:1px solid rgba(120,130,155,.16);border-radius:28px;background:linear-gradient(135deg,rgba(255,255,255,.94),rgba(235,245,255,.66));box-shadow:var(--shadow-soft)}
+.project-top-card .project-mini-icon{flex:0 0 62px}
+.project-doc-tabs{display:flex;gap:8px;flex-wrap:wrap;padding:8px;border:1px solid rgba(120,130,155,.16);border-radius:999px;background:rgba(255,255,255,.70);backdrop-filter:blur(18px);box-shadow:var(--shadow-soft)}
+.project-doc-tab{border:0;border-radius:999px;background:transparent;color:var(--muted);font-weight:850;font-size:13px;padding:10px 14px;transition:.18s ease;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+.project-doc-tab:hover,.project-doc-tab.active{background:#111;color:#fff;box-shadow:0 10px 22px rgba(20,24,32,.12)}
+.project-doc-content{border:1px solid rgba(120,130,155,.16);background:rgba(255,255,255,.78);border-radius:28px;padding:22px;box-shadow:var(--shadow-soft)}
+.legal-doc{max-width:860px;margin:0 auto;color:#2b3038}
+.legal-doc h2{font-size:1.45rem;letter-spacing:-.03em;margin-bottom:6px;color:var(--ink)}
+.legal-doc h3{font-size:1.05rem;letter-spacing:-.02em;margin:24px 0 8px;color:var(--ink)}
+.legal-doc h4{font-size:.92rem;margin:18px 0 6px;color:var(--ink)}
+.legal-doc p,.legal-doc li{font-size:14px;line-height:1.72;color:var(--muted)}
+.legal-doc ul,.legal-doc ol{margin:8px 0 0 18px;display:grid;gap:5px}
+.legal-doc a{color:var(--blue);font-weight:850;text-decoration:none}
+.legal-doc a:hover{text-decoration:underline}
+.legal-lead{padding:14px 16px;border-radius:20px;background:#f5f8ff;border:1px solid rgba(0,113,227,.12);margin:12px 0 16px}
+.support-q{border-top:1px solid rgba(120,130,155,.14);padding-top:14px;margin-top:14px}
+.project-pending-doc{padding:18px;border-radius:22px;background:#f7f9fc;border:1px dashed rgba(120,130,155,.34)}
+@media(max-width:760px){.project-top-card{flex-direction:column;padding:17px;border-radius:24px}.project-doc-tabs{border-radius:24px;align-items:stretch}.project-doc-tab{flex:1 1 100%;font-size:12.5px}.project-doc-content{padding:16px;border-radius:24px}.legal-doc h2{font-size:1.25rem}.legal-doc p,.legal-doc li{font-size:13px}}
+
+
+/* v56 fix: grid/flex items default to min-width:auto, which let horizontally-scrolling
+   rows (news filters, tabs, etc.) force their whole grid/flex ancestor chain wider than
+   the viewport on phones. Resetting min-width lets those rows scroll within their own
+   box instead of blowing out the page. */
+*{min-width:0}
 
 </style>
 </head>
 <body>
 <div class="bg-orb"></div><div class="bg-orb two"></div>
 <nav class="nav">
-  <a class="logo" href="#" onclick="showPage('hub')"><span class="logo-mark">✦</span><span>emmayg</span></a>
+  <a class="logo" href="#human" onclick="showPage('human')"><span class="logo-mark">✦</span><span>emmayg</span></a>
   <div class="nav-right">
-    <div class="tabbar" id="desktopTabs"></div>
+    <div class="tabbar" id="desktopTabs"><button class="nav-tab active" data-tab="hub" onclick="showPage('hub')">AI Hub</button><button class="nav-tab " data-tab="compass" onclick="showPage('compass')">AI Compass</button><button class="nav-tab " data-tab="knowledge" onclick="showPage('knowledge')">AI Playbook</button><button class="nav-tab " data-tab="portfolio" onclick="showPage('portfolio')">AI Portfolio</button><button class="nav-tab " data-tab="human" onclick="showPage('human')">The Human</button><button class="nav-tab " data-tab="contact" onclick="showPage('contact')">Contact</button></div>
     <div class="lang"><button onclick="toggleLang()" id="langBtn">EN ▾</button><div class="lang-menu" id="langMenu"><button onclick="setLang('en')">English</button><button onclick="setLang('zh')">中文</button><button onclick="setLang('da')">Dansk</button><button onclick="setLang('sv')">Svenska</button></div></div>
   </div>
 </nav>
@@ -459,7 +839,7 @@ main{max-width:1180px;margin:0 auto;padding:24px 18px 120px}.page{display:none;a
   <div class="hero"><div class="eyebrow" data-i18n="hubEyebrow">AI Hub</div><h1 data-i18n="hubTitle">Your bright AI command center.</h1><p class="lead" data-i18n="hubLead">Explore AI news, model rankings, GitHub trends, prompt recipes, Claude skills, and tool recommendations from one calm dashboard.</p></div>
   <div class="split">
     <div>
-      <div class="section-head"><div><h2>Live-looking AI resource dashboard</h2><p>Curated channels and reference links are separated from heavier knowledge areas so the hub stays quick to scan.</p></div></div>
+      <div class="section-head"><div><h2>AI News</h2></div></div>
       <div class="section ai-news-shell">
         <div class="ai-news-top"><div class="ai-news-label">AI News</div><div style="display:flex;align-items:center;gap:10px"><span class="live-pill"><span class="live-dot"></span>Live</span><button class="refresh-btn" id="newsRefreshBtn" onclick="manualRefreshNews()" title="Refresh news" aria-label="Refresh AI news">↻</button></div></div>
         <div class="news-filter-row" id="newsFilters"></div>
@@ -619,15 +999,27 @@ main{max-width:1180px;margin:0 auto;padding:24px 18px 120px}.page{display:none;a
   </div>
 </section>
 
+</main>
 <footer class="site-footer" aria-label="Site footer">
   <span>© 2026 emmayg</span>
   <span>Malmö, Sweden</span>
 </footer>
 
-<div class="mobile-nav" id="mobileTabs"></div>
+<div class="mobile-nav" id="mobileTabs"><button data-tab="hub" class="active" onclick="showPage('hub')">AI Hub</button><button data-tab="compass" class="" onclick="showPage('compass')">AI Compass</button><button data-tab="knowledge" class="" onclick="showPage('knowledge')">AI Playbook</button><button data-tab="portfolio" class="" onclick="showPage('portfolio')">AI Portfolio</button><button data-tab="human" class="" onclick="showPage('human')">The Human</button><button data-tab="contact" class="" onclick="showPage('contact')">Contact</button></div>
 <div class="modal" id="modal" onclick="closeModalOutside(event)"><div class="modal-box"><div class="modal-head"><strong id="modalTitle">Project</strong><button class="close" onclick="closeModal()">Close</button></div><div class="modal-body" id="modalBody"></div></div></div>
 <script>
 const tabs=[['hub','AI Hub'],['compass','AI Compass'],['knowledge','AI Playbook'],['portfolio','AI Portfolio'],['human','The Human'],['contact','Contact']];
+const byId=(id)=>document.getElementById(id);
+var desktopTabs=byId('desktopTabs'), mobileTabs=byId('mobileTabs'), langMenu=byId('langMenu'), langBtn=byId('langBtn');
+var newsList=byId('newsList'), newsFilters=byId('newsFilters'), newsCount=byId('newsCount'), newsClock=byId('newsClock'), newsFooter=byId('newsFooter');
+var modelAccessFilters=byId('modelAccessFilters'), modelCategoryFilters=byId('modelCategoryFilters'), modelRows=byId('modelRows'), modelFooter=byId('modelFooter');
+var repoFilters=byId('repoFilters'), repoList=byId('repoList'), repoFooter=byId('repoFooter'), skillFilters=byId('skillFilters'), skillList=byId('skillList'), skillFooter=byId('skillFooter');
+var promptFilters=byId('promptFilters'), promptGrid=byId('promptGrid'), compassSearch=byId('compassSearch'), compassTabs=byId('compassTabs');
+var glossaryGrid=byId('glossaryGrid'), courseGrid=byId('courseGrid'), paperGrid=byId('paperGrid'), regGrid=byId('regGrid'), historyList=byId('historyList'), landscapeGrid=byId('landscapeGrid');
+var industryDrilldown=byId('industryDrilldown'), playbookGrid=byId('playbookGrid'), projectFilters=byId('projectFilters'), projectShelf=byId('projectShelf');
+var modal=byId('modal'), modalTitle=byId('modalTitle'), modalBody=byId('modalBody');
+var purposeBot=byId('purposeBot'), toolAnswer=byId('toolAnswer'), complianceRegion=byId('complianceRegion'), complianceText=byId('complianceText'), complianceAnswer=byId('complianceAnswer'), regionMenu=byId('regionMenu'), regionSelectLabel=byId('regionSelectLabel');
+
 const translations={en:{hub:'AI Hub',compass:'AI Compass',knowledge:'AI Playbook',portfolio:'AI Portfolio',human:'The Human',contact:'Contact',hubEyebrow:'AI Hub',hubTitle:'Your bright AI command center.',hubLead:'Explore AI news, model rankings, GitHub trends, prompt recipes, Claude skills, and tool recommendations from one calm dashboard.',compassEyebrow:'AI Compass',compassTitle:'Decision-first AI knowledge base.',compassLead:'Glossary, education, papers, regulations, history, and landscape in compact cards with search and active states.',knowledgeEyebrow:'AI Playbook',knowledgeTitle:'Reusable AI playbooks.',knowledgeLead:'',portfolioEyebrow:'AI Portfolio',portfolioTitle:'AI projects.',portfolioLead:'',humanEyebrow:'The Human',humanTitle:'Emma Yu Gao',humanLead:'AI Product Explorer',contactEyebrow:'Contact',contactTitle:'Get in touch',contactLead:'Have an idea you want to explore? Building something with AI and need a thinking partner? Or just want to talk about what is possible — I am always up for an interesting conversation.'},zh:{"Updated":"更新日期","Reference":"参考","Refreshed":"刷新时间","ranked view":"排行视图","GitHub snapshot":"GitHub 快照","applied taxonomy":"应用技能分类","Exact source URLs · ranked by newest + editorial importance":"精确来源链接 · 按最新与重要性排序","Ranked by capability, access type, category fit, benchmark signals, and product usefulness":"按能力、访问方式、类别匹配、基准信号与产品实用性排序","Curated from GitHub Trending, AI topic popularity, repo relevance, and practical developer utility":"参考 GitHub Trending、AI 主题热度、仓库相关性与开发者实用性整理","Curated applied AI skills from prompt engineering, enterprise AI workflows, and practical AI product delivery":"基于提示工程、企业 AI 工作流与实际 AI 产品交付整理的应用技能","AI Industry Visual Map":"AI 行业视觉地图","A clickable market map of representative AI companies, products, infrastructure, applications, and governance layers. Click any block to open a detail card and expand next-level items.":"一张可点击的 AI 行业市场地图，覆盖代表性的公司、产品、基础设施、应用和治理层。点击任意模块可打开详情卡片并展开下一层项目。","Interactive":"可交互","Select a block to expand companies, products, signals, and next-level items.":"选择一个模块，展开公司、产品、信号和下一层项目。","Representative map":"代表性地图","Next-level items":"下一层项目","Market role":"市场角色","What it means":"含义","Why it matters":"为什么重要","Signals to watch":"观察信号","Representative companies / products":"代表公司 / 产品","Companies":"公司","Products":"产品","Infrastructure":"基础设施","Applications":"应用","Governance":"治理","Layer":"层级",hub:'AI中心',compass:'AI指南针',knowledge:'AI行动手册',portfolio:'AI作品集',human:'个人',contact:'联系',hubEyebrow:'AI中心',hubTitle:'明亮的 AI 指挥中心。',hubLead:'从一个清爽仪表盘探索 AI 新闻、模型排行、GitHub 趋势、提示词、技能和工具建议。',compassEyebrow:'AI指南针',compassTitle:'以决策为核心的 AI 知识库。',compassLead:'术语、教育、论文、监管、历史与生态地图，用紧凑卡片呈现。',knowledgeEyebrow:'AI行动手册',knowledgeTitle:'可复用的 AI 行动手册。',knowledgeLead:'',portfolioEyebrow:'AI作品集',portfolioTitle:'像选 CD 一样浏览 AI 项目。',portfolioLead:'',humanEyebrow:'个人',humanTitle:'Emma Yu Gao',humanLead:'AI 产品探索者',contactEyebrow:'联系',contactTitle:'联系我',contactLead:'有想探索的想法？正在用 AI 做东西，需要一个思考伙伴？或者只是想聊聊什么是可能的——我一直欢迎有趣的对话。'},da:{"Updated":"Opdateret","Reference":"Reference","Refreshed":"Opdateret kl.","ranked view":"ranket visning","GitHub snapshot":"GitHub-snapshot","applied taxonomy":"anvendt taksonomi","AI Industry Visual Map":"AI Industry Visual Map","Interactive":"Interaktiv","Select a block to expand companies, products, signals, and next-level items.":"Vælg en blok for at udvide virksomheder, produkter, signaler og næste niveau.","Next-level items":"Næste niveau","Market role":"Markedsrolle","What it means":"Hvad det betyder","Why it matters":"Hvorfor det er vigtigt","Signals to watch":"Signaler at følge","Representative companies / products":"Repræsentative virksomheder / produkter",hub:'AI Hub',compass:'AI Kompas',knowledge:'AI Playbook',portfolio:'AI Portfolio',human:'Mennesket',contact:'Kontakt',hubEyebrow:'AI Hub',hubTitle:'Dit lyse AI-kommandocenter.',hubLead:'Udforsk AI-nyheder, modelrangeringer, GitHub-trends, prompts, skills og værktøjsforslag.',compassEyebrow:'AI Kompas',compassTitle:'Beslutningsklar AI-viden.',compassLead:'Ordliste, læring, papers, regulering, historie og landskab i kompakte kort.',knowledgeEyebrow:'AI Playbook',knowledgeTitle:'Genbrugelige AI-playbooks.',knowledgeLead:'',portfolioEyebrow:'AI Portfolio',portfolioTitle:'AI-projekter som i en CD-butik.',portfolioLead:'',humanEyebrow:'Mennesket',humanTitle:'Emma Yu Gao',humanLead:'AI Product Explorer',contactEyebrow:'Kontakt',contactTitle:'Kontakt mig',contactLead:'Har du en idé, du vil udforske? Bygger du noget med AI og mangler en sparringspartner? Eller vil du bare tale om, hvad der er muligt — jeg er altid klar på en interessant samtale.'},sv:{"Updated":"Uppdaterad","Reference":"Referens","Refreshed":"Uppdaterad","ranked view":"rankad vy","GitHub snapshot":"GitHub-ögonblicksbild","applied taxonomy":"tillämpad taxonomi","AI Industry Visual Map":"AI Industry Visual Map","Interactive":"Interaktiv","Select a block to expand companies, products, signals, and next-level items.":"Välj ett block för att expandera företag, produkter, signaler och nästa nivå.","Next-level items":"Nästa nivå","Market role":"Marknadsroll","What it means":"Vad det betyder","Why it matters":"Varför det spelar roll","Signals to watch":"Signaler att följa","Representative companies / products":"Representativa företag / produkter",hub:'AI Hub',compass:'AI Kompass',knowledge:'AI Playbook',portfolio:'AI Portfolio',human:'Människan',contact:'Kontakt',hubEyebrow:'AI Hub',hubTitle:'Ditt ljusa AI-kommandocenter.',hubLead:'Utforska AI-nyheter, modellrankningar, GitHub-trender, prompts, skills och verktygsförslag.',compassEyebrow:'AI Kompass',compassTitle:'Beslutsinriktad AI-kunskap.',compassLead:'Ordlista, utbildning, papers, reglering, historia och landskap i kompakta kort.',knowledgeEyebrow:'AI Playbook',knowledgeTitle:'Återanvändbara AI-playbooks.',knowledgeLead:'',portfolioEyebrow:'AI Portfolio',portfolioTitle:'AI-projekt som i en CD-butik.',portfolioLead:'',humanEyebrow:'Människan',humanTitle:'Emma Yu Gao',humanLead:'AI Product Explorer',contactEyebrow:'Kontakt',contactTitle:'Hör av dig',contactLead:'Har du en idé du vill utforska? Bygger du något med AI och behöver en tankepartner? Eller vill du bara prata om vad som är möjligt — jag är alltid öppen för ett intressant samtal.'}};
 let lang='en',active='hub',openOnly=false,modelAccess='All access',modelCategory='All',repoCategory='All',skillCategory='All',projectFilter='All',promptFilter='All',compassActive='glossary',newsSourceFilter='All';
 let newsRefreshTick=0;
@@ -876,38 +1268,54 @@ const news=[
 const models=[
   [
     "1",
-    "GPT-5.5 / ChatGPT",
+    "Claude Opus 4.8",
     "Frontier assistant",
-    "General reasoning, writing, coding, multimodal workflows",
+    "Artificial Analysis #1 Intelligence Index signal; strong reasoning, scientific work and enterprise analysis",
+    "closed",
+    "https://www.anthropic.com/claude"
+  ],
+  [
+    "2",
+    "GPT-5.5 (xhigh)",
+    "Frontier assistant",
+    "Top-tier reasoning, writing, coding and multimodal work; ranked near the top of current benchmark leaderboards",
     "closed",
     "https://chat.openai.com/"
   ],
   [
-    "2",
-    "Claude",
+    "3",
+    "GPT-5.5 (high)",
     "Frontier assistant",
-    "Long-context analysis, careful writing, artifacts and agentic work",
+    "High-performing general assistant for business, product, coding, research and multimodal workflows",
+    "closed",
+    "https://chat.openai.com/"
+  ],
+  [
+    "4",
+    "Claude Opus 4.7",
+    "Frontier assistant",
+    "Strong long-context analysis, careful writing, reasoning and enterprise knowledge work",
     "closed",
     "https://claude.ai/"
   ],
   [
-    "3",
-    "Gemini",
+    "5",
+    "Gemini 3.1 Pro Preview",
     "Frontier assistant",
-    "Search-grounded research, multimodal work and Google ecosystem",
+    "High-ranking multimodal/search-connected model for Google ecosystem, structured synthesis and research",
     "closed",
     "https://gemini.google.com/"
   ],
   [
-    "4",
-    "Grok",
+    "6",
+    "Grok 4.x",
     "Frontier assistant",
-    "Real-time social/web context and X ecosystem workflows",
+    "Real-time social/web context and X ecosystem workflows; useful for live discussion tracking",
     "closed",
     "https://x.ai/"
   ],
   [
-    "5",
+    "7",
     "Perplexity",
     "Research tool",
     "Source-first answer engine, citations and quick research synthesis",
@@ -915,47 +1323,39 @@ const models=[
     "https://www.perplexity.ai/"
   ],
   [
-    "6",
+    "8",
     "Llama",
     "Open model",
-    "Open-weight experimentation, local deployment and fine-tuning",
+    "Open-weight experimentation, private deployment, fine-tuning and local AI stacks",
     "open",
     "https://www.llama.com/"
   ],
   [
-    "7",
+    "9",
     "Qwen",
     "Open model",
-    "Multilingual coding, open model research and local deployment",
+    "Open-weight multilingual and coding models with strong developer traction",
     "open",
     "https://qwenlm.github.io/"
   ],
   [
-    "8",
-    "Mistral",
-    "Open model",
-    "European AI stack, open models and enterprise deployment",
-    "open",
-    "https://mistral.ai/"
-  ],
-  [
-    "9",
+    "10",
     "DeepSeek",
     "Open model",
-    "Reasoning and coding research with open-weight options",
+    "Efficient reasoning and coding models with open-weight options",
     "open",
     "https://github.com/deepseek-ai"
   ],
   [
-    "10",
-    "Kimi / Moonshot",
-    "Frontier assistant",
-    "Long-context reasoning, Chinese/English research and coding",
-    "closed",
-    "https://www.moonshot.ai/"
+    "11",
+    "Mistral",
+    "Open model",
+    "European AI stack, open/hosted models and enterprise deployment options",
+    "open",
+    "https://mistral.ai/"
   ],
   [
-    "11",
+    "12",
     "Microsoft Copilot",
     "Productivity tool",
     "Office, Windows and enterprise productivity workflows",
@@ -963,7 +1363,7 @@ const models=[
     "https://copilot.microsoft.com/"
   ],
   [
-    "12",
+    "13",
     "GitHub Copilot",
     "Coding tool",
     "IDE coding assistance, code completion and pull-request support",
@@ -971,7 +1371,7 @@ const models=[
     "https://github.com/features/copilot"
   ],
   [
-    "13",
+    "14",
     "Cursor",
     "Coding tool",
     "AI-native IDE for codebase chat, edits and agentic coding",
@@ -979,7 +1379,7 @@ const models=[
     "https://www.cursor.com/"
   ],
   [
-    "14",
+    "15",
     "Windsurf",
     "Coding tool",
     "Agentic software development environment and codebase workflows",
@@ -987,7 +1387,7 @@ const models=[
     "https://windsurf.com/"
   ],
   [
-    "15",
+    "16",
     "Replit Agent",
     "Coding tool",
     "Prompt-to-app prototyping, hosted development and deployment",
@@ -995,7 +1395,7 @@ const models=[
     "https://replit.com/ai"
   ],
   [
-    "16",
+    "17",
     "Ollama",
     "Local tool",
     "Run Llama, Qwen, Mistral and other models locally",
@@ -1003,7 +1403,7 @@ const models=[
     "https://ollama.com/"
   ],
   [
-    "17",
+    "18",
     "LM Studio",
     "Local tool",
     "Desktop local model running, testing and chat workflows",
@@ -1011,7 +1411,7 @@ const models=[
     "https://lmstudio.ai/"
   ],
   [
-    "18",
+    "19",
     "Open WebUI",
     "Local tool",
     "Self-hosted interface for local and remote AI models",
@@ -1019,7 +1419,7 @@ const models=[
     "https://github.com/open-webui/open-webui"
   ],
   [
-    "19",
+    "20",
     "Hugging Face",
     "Model platform",
     "Model hub, datasets, Spaces, inference and open ML ecosystem",
@@ -1027,7 +1427,15 @@ const models=[
     "https://huggingface.co/"
   ],
   [
-    "20",
+    "21",
+    "OpenRouter",
+    "Model platform",
+    "Model routing and usage-based model discovery across providers",
+    "closed",
+    "https://openrouter.ai/"
+  ],
+  [
+    "22",
     "Replicate",
     "Model platform",
     "Hosted open-source model inference and product prototyping",
@@ -1035,7 +1443,7 @@ const models=[
     "https://replicate.com/"
   ],
   [
-    "21",
+    "23",
     "Runway",
     "Creative tool",
     "AI video generation, editing and visual production workflows",
@@ -1043,7 +1451,7 @@ const models=[
     "https://runwayml.com/"
   ],
   [
-    "22",
+    "24",
     "Midjourney",
     "Creative tool",
     "High-quality image generation and visual direction",
@@ -1051,7 +1459,7 @@ const models=[
     "https://www.midjourney.com/"
   ],
   [
-    "23",
+    "25",
     "Pika",
     "Creative tool",
     "Text/image-to-video generation for social and concept videos",
@@ -1059,7 +1467,7 @@ const models=[
     "https://pika.art/"
   ],
   [
-    "24",
+    "26",
     "ElevenLabs",
     "Creative tool",
     "Voice generation, dubbing and audio production",
@@ -1067,7 +1475,7 @@ const models=[
     "https://elevenlabs.io/"
   ],
   [
-    "25",
+    "27",
     "NotebookLM",
     "Research tool",
     "Personal source-grounded notebooks and study synthesis",
@@ -1075,15 +1483,7 @@ const models=[
     "https://notebooklm.google/"
   ],
   [
-    "26",
-    "Elicit",
-    "Research tool",
-    "Paper search, evidence extraction and literature review workflows",
-    "closed",
-    "https://elicit.com/"
-  ],
-  [
-    "27",
+    "28",
     "Zapier AI",
     "Automation tool",
     "No-code workflow automation across SaaS tools",
@@ -1091,20 +1491,12 @@ const models=[
     "https://zapier.com/ai"
   ],
   [
-    "28",
+    "29",
     "n8n AI",
     "Automation tool",
     "Open-source automation with AI nodes and self-hosting options",
     "open",
     "https://n8n.io/"
-  ],
-  [
-    "29",
-    "Pinecone",
-    "Data/RAG tool",
-    "Managed vector database for semantic search and RAG products",
-    "closed",
-    "https://www.pinecone.io/"
   ],
   [
     "30",
@@ -2226,16 +2618,12 @@ function openEnterpriseTag(id,tag){
 }
 
 const projects=[
-{cat:'Application',icon:'📋',title:'Regulatory Monitor',desc:'Live EBA and AI regulatory updates — browse rules, track a timeline, and stay ahead of compliance changes.',tags:['Live','EBA','AI Regulation'],logic:'Fetches regulatory feeds, filters by topic, highlights selected items, and shows a timeline for compliance monitoring.'},
-{cat:'Application',icon:'🌍',title:'Long Distance',desc:'Weather and local news for a place on your mind — useful for long-distance relationships, travel planning, or caring about somewhere far away.',tags:['Weather API','Local news'],logic:'Search city, fetch weather forecast, show local context, and link to source news.'},
-{cat:'Application',icon:'🕵️',title:'Whos Undercovering?',desc:'Party word game where everyone talks about the same topic except the undercover agent. Find the impostor before it is too late.',tags:['Game','3–10 players'],logic:'Select players and category, deal hidden roles, flip cards, translate words, kick suspected players, reveal result.'},
-{cat:'Application',icon:'🪞',title:'OOTD',desc:'Daily outfit assistant — get weather-based outfit ideas or style looks from your own closet with a personalised figure.',tags:['Style','Weather'],logic:'Combines profile, local weather, closet uploads, and style chips to recommend a wearable outfit.'},
-{cat:'Application',icon:'☯',title:'FengShui & BaZi',desc:'Daily fortune guide based on ancient Chinese FengShui. Calculate BaZi and ask the oracle questions about destiny.',tags:['BaZi','AI Oracle'],logic:'Uses real pillar logic for year, month, day, and hour pillars; production BaZi uses solar-term calendar precision and timezone handling.'},
-{cat:'Community',icon:'🌑',title:'Nothing',desc:'Private rooms for quiet conversations. Create a room, set a password, and share it with whoever should find it.',tags:['Private rooms','Community'],logic:'Password-protected room flow with simple private conversation space and shareable access pattern.'},
-{cat:'Visual',icon:'🗺️',title:'AI Tools Knowledge Map',desc:'Visual map of AI tools across 12 categories, 70+ apps, 100+ use cases, prompting tips, and tool selection guidance.',tags:['Infographic','AI Tools'],logic:'Generated visual concept prompt for a high-density AI tools knowledge map.'},
-{cat:'Visual',icon:'⚖️',title:'AI Regulation Landscape',desc:'Visual comparison of AI governance across EU, US, UK, China, and Singapore with a compliance checklist.',tags:['Infographic','Regulation'],logic:'Generated visual prompt for a 2026 AI regulation landscape reference.'},
-{cat:'Visual',icon:'🎬',title:'Video Project 01',desc:'Coming soon — reserved for an AI-generated video project.',tags:['Coming soon'],logic:'Placeholder kept but visually de-emphasized.'},
-{cat:'Visual',icon:'🎬',title:'Video Project 02',desc:'Coming soon — another AI video project in the works.',tags:['Coming soon'],logic:'Placeholder kept but visually de-emphasized.'}
+{cat:'Application',icon:'🎲',title:'Caroline',slug:'caroline',desc:'A clean dice app made with GPT — simple random dice rolling for quick decisions, games, and playful party utilities.',tags:['Dice','GPT-built','Utility'],logic:'User selects or taps the dice, the app generates a fair random result, and the interface keeps the experience fast, simple, and minimal.'},
+{cat:'Application',icon:'🌸',title:'Pidgin',slug:'pidgin',desc:'A paper-oracle daily draw app with Sakura Omikuji, Chinese Qian, English Paper Oracle, Rune Whisper, and poetic fortune modes.',tags:['Oracle','Daily draw','Ritual'],logic:'User chooses an oracle bucket, draws once or unlocks more draws, and receives a short symbolic reading in a calm paper-inspired interface.'},
+{cat:'Application',icon:'☯️',title:'Yazel',slug:'yazel',desc:'A Fengshui, BaZi, and Zodiac guidance app that turns birth info and daily timing into simple environment-energy and destiny insights.',tags:['Fengshui','BaZi','Zodiac'],logic:'User enters birth profile and checks Fengshui, BaZi, or Zodiac tabs to receive daily, weekly, and monthly guidance with clear explanations.'},
+{cat:'Application',icon:'💧',title:'Sofie',slug:'sofie',desc:'A beautiful daily intake diary for water, food, and supplements — focused on personal tracking, not medical diagnosis.',tags:['Health diary','Water','Supplements'],logic:'User logs intake through quick actions, photo/voice/text notes, and manual supplement entries; the app keeps a clean daily history.'},
+{cat:'Application',icon:'📄',title:'Peter',slug:'peter',desc:'A minimal local PDF editor for scanning, uploading, deleting pages, reordering pages, rotating, renaming, merging, and exporting PDFs.',tags:['PDF','Local-first','Utility'],logic:'User imports or scans PDFs, edits pages locally on device, then exports or shares the final file without sending documents to an external backend.'},
+{cat:'Application',icon:'🕵️',title:'Andreas',slug:'andreas',desc:'A party game for finding the undercover player through hidden roles, word prompts, discussion, voting, and reveal rounds.',tags:['Party game','Undercover','Multiplayer'],logic:'Players receive hidden words or roles, discuss without revealing too much, vote out suspects, and continue until the undercover side or citizens win.'}
 ];
 const playbooks=[
   {
@@ -2329,8 +2717,36 @@ const playbooks=[
     deliverables:['Data quality checklist','Analysis notebook/query','Decision memo','Dashboard view']
   }
 ];
-function initTabs(){for(const [id,label] of tabs){desktopTabs.innerHTML+=`<button class="nav-tab ${id==='hub'?'active':''}" data-tab="${id}" onclick="showPage('${id}')">${label}</button>`;mobileTabs.innerHTML+=`<button data-tab="${id}" class="${id==='hub'?'active':''}" onclick="showPage('${id}')">${label}</button>`;}}
-function showPage(id){active=id;document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById('page-'+id).classList.add('active');document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active',b.dataset.tab===id));window.scrollTo({top:0,behavior:'smooth'})}
+
+function switchTab(id, shouldScroll=true){
+  if(!id)return;
+  const page=document.getElementById('page-'+id);
+  if(!page)return;
+  active=id;
+  document.querySelectorAll('.page').forEach(p=>{
+    p.classList.toggle('active', p.id==='page-'+id);
+    p.style.display = p.id==='page-'+id ? 'block' : 'none';
+  });
+  document.querySelectorAll('[data-tab]').forEach(b=>b.classList.toggle('active', b.dataset.tab===id));
+  if(history && history.replaceState) history.replaceState(null,'','#'+id);
+  if(shouldScroll) window.scrollTo({top:0,behavior:'smooth'});
+}
+document.addEventListener('click', function(e){
+  const tab=e.target.closest('[data-tab]');
+  if(!tab)return;
+  e.preventDefault();
+  e.stopPropagation();
+  switchTab(tab.dataset.tab,true);
+}, true);
+function applyInitialHash(){
+  const id=(location.hash||'').replace('#','');
+  if(typeof parseProjectDocHash==='function' && parseProjectDocHash(id)){switchTab('portfolio',false);handlePolicyHash();return;}
+  if(id && document.getElementById('page-'+id)) switchTab(id,false);
+  else switchTab(active||'hub',false);
+}
+
+function initTabs(){desktopTabs.innerHTML='';mobileTabs.innerHTML='';for(const [id,label] of tabs){desktopTabs.innerHTML+=`<button class="nav-tab ${id==='hub'?'active':''}" data-tab="${id}" onclick="showPage('${id}')">${label}</button>`;mobileTabs.innerHTML+=`<button data-tab="${id}" class="${id==='hub'?'active':''}" onclick="showPage('${id}')">${label}</button>`;}}
+function showPage(id){switchTab(id,true)}
 function toggleLang(){langMenu.classList.toggle('open')}
 /* v35 broader language localization */
 const contentLexicon={
@@ -2378,10 +2794,10 @@ function rerenderLocalized(){
 function setLang(l){lang=l;langMenu.classList.remove('open');langBtn.textContent=l.toUpperCase()+' ▾';applyLang()}function applyLang(){const t=translations[lang];document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=t[el.dataset.i18n]||el.textContent});document.querySelectorAll('[data-tab]').forEach(b=>{b.textContent=t[b.dataset.tab]||b.textContent});rerenderLocalized()}
 
 const hubDataMeta={
- news:{updated:'May 15, 2026',ref:'Exact source URLs · ranked by newest + editorial importance',links:[['Source articles','#']]},
- models:{updated:'May 15, 2026',ref:'Ranked by capability, access type, category fit, benchmark signals, and product usefulness',links:[['Artificial Analysis','https://artificialanalysis.ai/leaderboards/models'],['LMArena','https://huggingface.co/spaces/lmarena-ai/arena-leaderboard'],['OpenRouter','https://openrouter.ai/']]},
- repos:{updated:'May 15, 2026',ref:'Curated from GitHub Trending, AI topic popularity, repo relevance, and practical developer utility',links:[['GitHub Trending','https://github.com/trending'],['GitHub AI Topic','https://github.com/topics/ai']]},
- skills:{updated:'May 15, 2026',ref:'Curated applied AI skills from prompt engineering, enterprise AI workflows, and practical AI product delivery',links:[['OpenAI Prompting','https://developers.openai.com/api/docs/guides/prompt-engineering'],['Prompt Engineering Guide','https://www.promptingguide.ai/']]}
+ news:{updated:'June 06, 2026',ref:'Exact source URLs · ranked by newest + editorial importance',links:[['Source articles','#']]},
+ models:{updated:'June 06, 2026',ref:'Updated from Artificial Analysis Intelligence Index, LMArena overview, OpenRouter usage rankings, access type, category fit, and product usefulness',links:[['Artificial Analysis','https://artificialanalysis.ai/leaderboards/models'],['LMArena','https://huggingface.co/spaces/lmarena-ai/arena-leaderboard'],['OpenRouter','https://openrouter.ai/']]},
+ repos:{updated:'June 06, 2026',ref:'Curated from GitHub Trending, AI topic popularity, repo relevance, and practical developer utility',links:[['GitHub Trending','https://github.com/trending'],['GitHub AI Topic','https://github.com/topics/ai']]},
+ skills:{updated:'June 06, 2026',ref:'Curated applied AI skills from prompt engineering, enterprise AI workflows, and practical AI product delivery',links:[['OpenAI Prompting','https://developers.openai.com/api/docs/guides/prompt-engineering'],['Prompt Engineering Guide','https://www.promptingguide.ai/']]}
 };
 const hubRefreshState={news:null,models:null,repos:null,skills:null};
 function hubStamp(){return new Date().toLocaleString([], {year:'numeric',month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'});}
@@ -2392,10 +2808,8 @@ function hubRefHtml(key){
 }
 function hubFooterHtml(key,countLabel,modeLabel,filterLabel=''){
  const refreshed=hubRefreshState[key]||hubStamp();
- const inner=`<span class="footer-meta-primary">${countLabel} · ${modeLabel} · ${LT('Refreshed')}: ${refreshed}${filterLabel?` · ${filterLabel}`:''}</span><span class="sep">·</span>${hubRefHtml(key)}`;
- return `<div class="ticker-track"><div class="ticker-content">${inner}</div><div class="ticker-content" aria-hidden="true">${inner}</div></div>`;
+ return `<span class="footer-meta-primary">${countLabel} · ${modeLabel} · ${LT('Refreshed')}: ${refreshed}${filterLabel?` · ${filterLabel}`:''}</span>${hubRefHtml(key)}`;
 }
-
 
 function renderNews(isManual=false){
   const sources=['All',...new Set(news.map(n=>n.source))];
@@ -2691,6 +3105,12 @@ function renderPlaybooks(){playbookGrid.innerHTML=playbooks.map((p,i)=>`<button 
 function openPlaybook(i){const p=playbooks[i];modalTitle.textContent=p.title;modalBody.innerHTML=`<div class="landscape-detail"><div class="landscape-hero"><div class="landscape-big-icon">${p.icon}</div><div><h2>${p.title}</h2><p class="small">${p.desc}</p><div class="tagrow">${p.tags.map(t=>`<span class="tag blue">${t}</span>`).join('')}</div></div></div><div class="card"><h3>Workflow</h3><div class="workflow-grid" style="margin-top:14px">${p.steps.map((step,idx)=>`<div class="workflow-step"><div class="workflow-num">${idx+1}</div><div><strong>${step[0]}</strong><p class="workflow-note">${step[1]}</p></div></div>`).join('')}</div></div><div class="card"><h3>Useful tools / references</h3><div class="tool-strip">${p.tools.map(t=>`<span class="tool-chip">${t}</span>`).join('')}</div></div><div class="card"><h3>Expected outputs</h3><ul class="deliverable-list">${p.deliverables.map(d=>`<li>${d}</li>`).join('')}</ul></div></div>`;modal.classList.add('open')}
 function projectBgClass(p,i){
  const map={
+  'Caroline':'bg-caroline',
+  'Pidgin':'cd-bg-3',
+  'Yazel':'bg-fengshui',
+  'Sofie':'cd-bg-6',
+  'Peter':'bg-nothing',
+  'Andreas':'bg-undercover',
   'Regulatory Monitor':'bg-regulatory',
   'Long Distance':'bg-longdistance',
   'Whos Undercovering?':'bg-undercover',
@@ -2707,7 +3127,55 @@ function renderProjects(){
  projectShelf.innerHTML=visible.map((p,i)=>`<article class="cd-card ${projectBgClass(p,i)}" onclick="openProjectByIndex(${projects.indexOf(p)})" tabindex="0" onkeydown="if(event.key==='Enter')openProjectByIndex(${projects.indexOf(p)})"><div><div class="cd-topline"><div class="icon">${p.icon}</div><span class="cd-type">${LT(p.cat)}</span></div><h3 class="project-title">${LT(p.title)}</h3><p class="small">${LT(p.desc)}</p><div class="cd-hidden"><div class="tagrow">${p.tags.map(t=>`<span class="tag">${LT(t)}</span>`).join('')}</div><p class="small" style="margin-top:10px"><strong>${LT('Logic')}:</strong> ${LT(p.logic)}</p></div></div><button class="project-open" onclick="event.stopPropagation();openProjectByIndex(${projects.indexOf(p)})">${LT('Open application')}</button></article>`).join('')
 }
 
-function projectDetailTemplate(p){return `<div class="project-modal-grid"><div class="project-panel"><div class="project-hero-mini"><div class="project-mini-icon">${p.icon}</div><div><span class="tag blue">${LT(p.cat)}</span><h2 style="margin-top:8px">${LT(p.title)}</h2><p class="small">${LT(p.desc)}</p></div></div><div class="card" style="margin-top:16px"><h3>${LT('Application logic')}</h3><p class="small">${LT(p.logic)}</p></div><div class="tagrow">${p.tags.map(t=>`<span class="tag blue">${LT(t)}</span>`).join('')}</div></div><div class="project-panel"><h3>${LT('Preview workflow')}</h3><ol style="margin-left:18px;color:var(--muted);font-size:14px;line-height:1.75;margin-top:10px"><li>${LT('User opens the application card.')}</li><li>${LT('The app requests only the minimum information needed.')}</li><li>${LT('Logic processes context and returns a clean output.')}</li><li>${LT('User can test, iterate, or export the result.')}</li></ol></div></div>`}
+function projectDocLabel(type){return type==='terms'?'Terms of Use':(type==='support'?'Support Page':'Privacy Policy')}
+function projectSlug(p){return p.slug || String(p.title||'project').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')}
+function projectHash(slug,type){return `#${slug}-${type}`}
+function setProjectHash(p,type){const hash=projectHash(projectSlug(p),type); if(location.hash!==hash) location.hash=hash}
+
+const carolineLegalDocs={
+privacy:`<article class="legal-doc"><h2>Privacy Policy for Caroline – The Dice</h2><p><strong>Effective date:</strong> 6 June 2026</p><p>Caroline – The Dice is developed and published by emmayg studio.</p><p>This Privacy Policy explains how Caroline – The Dice handles information when you use the app. Caroline is designed as a simple local dice and party utility app. We aim to collect as little information as possible.</p><h3>1. Summary</h3><p>Caroline – The Dice does not require an account.</p><p>Caroline – The Dice does not collect personal data for advertising, analytics, tracking, profiling, or resale.</p><p>Caroline – The Dice does not use third-party advertising SDKs, third-party analytics SDKs, or tracking technologies.</p><p>App settings, custom dice options, and related preferences are stored locally on your device unless stated otherwise.</p><h3>2. Information We Do Not Collect</h3><p>Caroline – The Dice does not collect:</p><ul><li>Your name</li><li>Your email address inside the app</li><li>Your phone number</li><li>Your contacts</li><li>Your precise or approximate location</li><li>Your photos or videos</li><li>Your microphone recordings</li><li>Your camera data</li><li>Your browsing history</li><li>Your search history</li><li>Advertising identifiers</li><li>Device identifiers for tracking</li><li>Health, fitness, financial, or sensitive personal information</li></ul><p>We do not sell personal data.</p><p>We do not share personal data with advertisers.</p><p>We do not track users across apps or websites.</p><h3>3. Local App Data</h3><p>Caroline may store certain information locally on your device to make the app work properly. This may include:</p><ul><li>App preferences</li><li>Dice settings</li><li>Custom dice faces or custom labels created by you</li><li>Recently used modes or local app state</li><li>Whether Pro features have been unlocked</li></ul><p>This information is stored on your device. It is not sent to emmayg studio servers because Caroline does not use an emmayg studio backend for these features.</p><p>You can delete local app data by deleting the app from your device. If the app includes in-app options to reset or delete custom dice data, you may also use those controls.</p><h3>4. In-App Purchases</h3><p>Caroline may offer an optional one-time Pro unlock through Apple’s In-App Purchase system.</p><p>Payments are processed by Apple through the App Store. emmayg studio does not receive your payment card number, bank account details, Apple ID password, or full payment information.</p><p>Apple may process purchase-related information according to Apple’s own terms and privacy policies.</p><p>Caroline may use Apple StoreKit functionality to check whether a Pro purchase has been made or restored. This is used only to provide the purchased app functionality.</p><h3>5. Support Communications</h3><p>If you contact emmayg studio by email for support, feedback, bug reports, or feature requests, we may receive the information you choose to provide, such as:</p><ul><li>Your email address</li><li>Your message content</li><li>Screenshots or technical details you choose to send</li><li>App version or device information you choose to include</li></ul><p>We use this information only to respond to your request, provide support, improve the app, and keep necessary records.</p><p>We do not use support emails for advertising or tracking.</p><h3>6. Third-Party Services</h3><p>Caroline – The Dice does not use third-party advertising networks or third-party analytics services.</p><p>The app may rely on Apple services such as the App Store and StoreKit for app distribution and in-app purchases. Apple handles those services under Apple’s own terms and privacy policies.</p><p>If a future version adds third-party services, cloud features, analytics, advertising, account login, online multiplayer, or sharing through a backend, this Privacy Policy and the App Store privacy details will be updated before or at the time those features are released.</p><h3>7. Children’s Privacy</h3><p>Caroline – The Dice is not specifically directed to children.</p><p>The app may include party-game features or social prompts. If any mode includes references to alcohol, drinking games, or adult party activities, those features are intended only for users who are legally allowed to access and participate in such activities in their country or region.</p><p>We do not knowingly collect personal data from children.</p><p>If you believe a child has contacted us and provided personal data through support email, please contact us and we will take reasonable steps to delete that information.</p><h3>8. Data Retention</h3><p>Local app data stays on your device until you delete it, reset it, or uninstall the app.</p><p>Support emails may be kept for as long as reasonably necessary to respond to your request, maintain support records, resolve disputes, improve the app, and comply with legal obligations.</p><p>You may request deletion of support communications by contacting us. We may need to retain limited information where required by law, security, dispute resolution, or legitimate business record purposes.</p><h3>9. Your Rights and Choices</h3><p>Depending on where you live, you may have rights to request access, correction, deletion, restriction, or objection regarding personal data that we hold about you.</p><p>Because Caroline does not use accounts and does not collect personal data inside the app, most app data is stored only on your own device. You control that data by deleting custom settings, resetting the app where available, or uninstalling the app.</p><p>For support emails or other information you voluntarily sent to us, you may contact us to request access or deletion.</p><h3>10. Security</h3><p>We design Caroline to minimize data collection. Local app data remains on your device unless you choose to share it through your device’s own features.</p><p>No method of storage or transmission is completely secure, but we aim to reduce privacy risk by avoiding unnecessary collection of personal data.</p><h3>11. International Users</h3><p>Caroline may be available in multiple countries and regions. By using the app or contacting us, you understand that any support communication you send may be processed in the country where emmayg studio operates or where its email service providers operate.</p><h3>12. Changes to This Privacy Policy</h3><p>We may update this Privacy Policy from time to time. If we make material changes, we will update the effective date and, where appropriate, provide notice in the app or on our website.</p><h3>13. Contact</h3><p>For privacy questions, support requests, or data deletion requests, contact:</p><p><strong>emmayg studio</strong><br>Email: <a href="mailto:emmagao0722@gmail.com">emmagao0722@gmail.com</a></p></article>`,
+terms:`<article class="legal-doc"><h2>Terms of Use for Caroline – The Dice</h2><p><strong>Effective date:</strong> 6 June 2026</p><p>These Terms of Use apply to your use of Caroline – The Dice, an app developed and published by emmayg studio.</p><p>By downloading, accessing, or using Caroline – The Dice, you agree to these Terms. If you do not agree, do not use the app.</p><h3>1. About Caroline – The Dice</h3><p>Caroline – The Dice is a dice and party utility app. It may include classic dice, party dice, custom dice, random decision tools, and optional Pro features.</p><p>The app is intended for entertainment and casual utility purposes only.</p><p>Caroline is not a gambling app, casino app, betting app, lottery app, or real-money gaming service.</p><h3>2. Apple App Store Terms</h3><p>Caroline is distributed through the Apple App Store.</p><p>Your download and use of Caroline is also subject to Apple’s App Store terms, Apple Media Services terms, and Apple’s Standard End User License Agreement unless a separate custom license agreement is provided through App Store Connect.</p><p>In case of conflict between these Terms and mandatory Apple App Store terms, Apple’s applicable terms may control where required.</p><h3>3. Eligibility and Responsible Use</h3><p>You are responsible for using Caroline safely, legally, and appropriately.</p><p>You agree not to use the app:</p><ul><li>For real-money gambling, betting, wagering, lotteries, or prize-based games of chance</li><li>To encourage illegal activity</li><li>To encourage dangerous, reckless, or harmful behavior</li><li>To harass, threaten, bully, defame, or abuse others</li><li>To create or use hateful, discriminatory, sexually explicit, violent, or illegal custom dice content</li><li>In a way that violates local law or the rights of another person</li></ul><p>If Caroline includes party prompts, drinking-game prompts, or references to alcohol, those features are intended only for users who are legally permitted to consume alcohol in their country or region. Caroline does not encourage excessive alcohol use, underage drinking, drunk driving, or unsafe behavior.</p><h3>4. No Gambling or Real-Money Rewards</h3><p>Caroline provides random dice results for entertainment and decision-making.</p><p>The app does not provide:</p><ul><li>Real-money betting</li><li>Cash prizes</li><li>Redeemable monetary rewards</li><li>Casino services</li><li>Lottery services</li><li>Sports betting</li><li>Financial wagering</li><li>Gambling accounts</li><li>Gambling payment processing</li></ul><p>You must not use Caroline as a tool for illegal gambling or unlawful betting.</p><h3>5. Free Features and Pro Unlock</h3><p>Caroline may include free features and optional paid Pro features.</p><p>If Pro features are offered, they are unlocked through Apple’s In-App Purchase system.</p><p>A Pro unlock is intended to be a one-time non-consumable purchase unless the App Store product page clearly states otherwise.</p><p>The exact price, currency, taxes, and payment terms are displayed by Apple before purchase.</p><p>emmayg studio does not process your payment card information directly.</p><h3>6. Restore Purchases</h3><p>If you purchase a non-consumable Pro unlock, you should be able to restore that purchase using the Restore Purchase function in the app, subject to Apple’s App Store systems and your Apple Account status.</p><p>If restore does not work, please contact support and also check that you are signed into the same Apple Account used for the original purchase.</p><h3>7. Refunds</h3><p>Purchases made through the App Store are handled by Apple.</p><p>Refund requests are managed by Apple according to Apple’s refund rules and processes. emmayg studio cannot directly issue App Store refunds.</p><h3>8. Optional Tips or Support</h3><p>If Caroline offers any optional tip or support feature inside the app, it should be processed through Apple’s approved purchase system where required.</p><p>Any tip, support payment, or donation is voluntary and does not unlock Pro features unless clearly described as an Apple In-App Purchase product.</p><p>Do not use external payment links inside the app to unlock digital features.</p><h3>9. Custom Dice Content</h3><p>Caroline may allow you to create custom dice labels, prompts, or settings.</p><p>You are responsible for any custom content you create.</p><p>Custom dice content is intended for personal entertainment use. You agree not to create custom content that is illegal, abusive, hateful, defamatory, sexually exploitative, threatening, or otherwise harmful.</p><p>Unless a future version clearly states otherwise, custom dice content is stored locally on your device and is not uploaded to emmayg studio servers.</p><h3>10. Local Data and Device Storage</h3><p>Caroline may store app settings, dice preferences, custom dice labels, and purchase status locally on your device.</p><p>You are responsible for backing up any custom content you care about. emmayg studio is not responsible for local data loss caused by device failure, app deletion, operating system changes, or user action.</p><h3>11. Intellectual Property</h3><p>Caroline – The Dice, including its design, name, interface, graphics, features, text, and original content, is owned by emmayg studio or its licensors and is protected by applicable intellectual property laws.</p><p>You may use the app for personal, non-commercial purposes according to these Terms and the applicable App Store license.</p><p>You may not copy, modify, reverse engineer, distribute, sell, sublicense, or create derivative works from the app except where allowed by law or by applicable open-source licenses.</p><h3>12. User Feedback</h3><p>If you send ideas, feedback, bug reports, or suggestions to emmayg studio, you allow us to use them to improve Caroline and related products without owing you compensation.</p><p>You should not send confidential information in feedback or support messages.</p><h3>13. Availability and Changes</h3><p>We may update, modify, suspend, or discontinue parts of Caroline at any time.</p><p>We may add, remove, or change features, designs, modes, or Pro functionality where reasonable.</p><p>We aim to keep the app useful and stable, but we do not guarantee that every feature will always be available on every device or operating system version.</p><h3>14. No Warranty</h3><p>Caroline is provided “as is” and “as available.”</p><p>To the maximum extent permitted by law, emmayg studio makes no warranties that the app will be uninterrupted, error-free, secure, or suitable for your specific purpose.</p><p>The app is for entertainment and casual utility only. Dice results are random or pseudo-random and should not be relied upon for serious financial, medical, legal, safety, or life decisions.</p><h3>15. Limitation of Liability</h3><p>To the maximum extent permitted by law, emmayg studio will not be liable for indirect, incidental, special, consequential, exemplary, or punitive damages, including loss of data, loss of profits, loss of goodwill, device issues, or harm caused by misuse of the app.</p><p>Nothing in these Terms excludes liability that cannot be excluded under applicable law.</p><h3>16. Indemnity</h3><p>You agree to take responsibility for claims, losses, damages, liabilities, and expenses arising from your misuse of Caroline, your custom dice content, your violation of these Terms, or your violation of any law or third-party rights.</p><h3>17. Termination</h3><p>You may stop using Caroline at any time by deleting the app from your device.</p><p>We may restrict or discontinue access to features if required by law, App Store rules, security concerns, or serious misuse.</p><p>Sections that by their nature should survive termination will continue to apply, including intellectual property, disclaimers, limitation of liability, and dispute-related provisions.</p><h3>18. Governing Law</h3><p>These Terms are governed by the laws of Sweden, except where mandatory consumer protection laws in your country or region require otherwise.</p><p>If you live in the European Union or another region with mandatory consumer rights, nothing in these Terms limits rights you cannot legally waive.</p><h3>19. Changes to These Terms</h3><p>We may update these Terms from time to time.</p><p>If we make material changes, we will update the effective date and, where appropriate, provide notice in the app or on our website.</p><p>Your continued use of Caroline after changes means you accept the updated Terms.</p><h3>20. Contact</h3><p>For questions about these Terms, contact:</p><p><strong>emmayg studio</strong><br>Email: <a href="mailto:emmagao0722@gmail.com">emmagao0722@gmail.com</a></p></article>`,
+support:`<article class="legal-doc"><h2>Caroline – The Dice Support</h2><p class="legal-lead">Caroline – The Dice is a dice and party utility app by emmayg studio. Use this page for support, bug reports, privacy questions, purchase issues, and feedback.</p><h3>Contact</h3><p>Email: <a href="mailto:emmagao0722@gmail.com">emmagao0722@gmail.com</a></p><p>When contacting support, please include:</p><ul><li>App name: Caroline – The Dice</li><li>Your device model</li><li>Your iOS version</li><li>Your app version</li><li>A short description of the issue</li><li>Screenshots, if helpful</li></ul><p>Please do not send sensitive personal information unless it is necessary for the support request.</p><h3>Common Questions</h3><div class="support-q"><h4>Does Caroline collect personal data?</h4><p>Caroline is designed to work locally on your device. It does not require an account and does not use ads, analytics, or tracking.</p><p>Custom dice settings and app preferences are stored locally on your device unless a future version clearly states otherwise.</p></div><div class="support-q"><h4>How do I restore Pro?</h4><p>Open Caroline and look for Restore Purchase in the Pro, Settings, or purchase screen.</p><p>Make sure you are signed into the same Apple Account used for the original purchase.</p><p>If restore still does not work, contact support.</p></div><div class="support-q"><h4>How do I request a refund?</h4><p>App Store purchases and refunds are handled by Apple.</p><p>Please use Apple’s official refund process through your Apple Account purchase history or Apple Support.</p><p>emmayg studio cannot directly issue App Store refunds.</p></div><div class="support-q"><h4>Is Caroline a gambling app?</h4><p>No.</p><p>Caroline does not offer betting, wagering, casino services, lottery services, cash prizes, or real-money rewards.</p><p>The app is for entertainment, party games, and casual random decision-making.</p></div><div class="support-q"><h4>Does Caroline encourage drinking?</h4><p>Caroline may include party-game content depending on the version and mode.</p><p>Any references to alcohol or drinking games are intended only for users who are legally permitted to access and participate in such activities in their country or region.</p><p>Caroline does not encourage underage drinking, excessive alcohol consumption, drunk driving, or unsafe behavior.</p></div><div class="support-q"><h4>How do I delete my data?</h4><p>Most Caroline data is stored locally on your device.</p><p>You can delete local data by deleting the app from your device. If the app includes reset controls for custom dice or settings, you may also use those controls.</p><p>For support emails or privacy requests, contact emmayg studio at <a href="mailto:emmagao0722@gmail.com">emmagao0722@gmail.com</a>.</p></div><h3>Legal Pages</h3><p>Privacy Policy: <a href="#caroline-privacy" onclick="event.preventDefault();openProjectDoc('caroline','privacy',true)">#caroline-privacy</a><br>Terms of Use: <a href="#caroline-terms" onclick="event.preventDefault();openProjectDoc('caroline','terms',true)">#caroline-terms</a></p><h3>Developer</h3><p><strong>emmayg studio</strong><br>Contact: <a href="mailto:emmagao0722@gmail.com">emmagao0722@gmail.com</a></p></article>`
+};
+
+function genericProjectDocHtml(p,type){
+ const title=escapeHtml(p.title);
+ const desc=escapeHtml(p.desc);
+ if(type==='support')return `<article class="legal-doc"><h2>${title} Support</h2><p class="legal-lead">${desc}</p><h3>Contact</h3><p>Email: <a href="mailto:emmagao0722@gmail.com">emmagao0722@gmail.com</a></p><p>When contacting support, include the app name, your device model, iOS version, app version, a short issue description, and screenshots if helpful.</p><h3>Status</h3><p>This project is listed in the AI Portfolio. Full App Store legal pages will be added when this app is prepared for release.</p></article>`;
+ return `<article class="legal-doc"><h2>${projectDocLabel(type)} for ${title}</h2><div class="project-pending-doc"><p><strong>Draft pending.</strong> ${title} has been added to the portfolio, but the full ${projectDocLabel(type)} has not been inserted yet.</p><p>Current project intro: ${desc}</p><p>Contact: <a href="mailto:emmagao0722@gmail.com">emmagao0722@gmail.com</a></p></div></article>`;
+}
+function projectDocHtml(p,type){return p.title==='Caroline' ? carolineLegalDocs[type||'privacy'] : genericProjectDocHtml(p,type||'privacy')}
+function projectDocTabs(p,active){
+ const slug=projectSlug(p);
+ const tabs=['privacy','terms','support'];
+ return `<div class="project-doc-tabs">${tabs.map(t=>`<a class="project-doc-tab ${t===active?'active':''}" href="${projectHash(slug,t)}" onclick="event.preventDefault();openProjectDoc('${slug}','${t}',true)">${projectDocLabel(t)}</a>`).join('')}</div>`
+}
+function projectDetailTemplate(p,active='privacy'){
+ const safeTitle=escapeHtml(p.title), safeDesc=escapeHtml(p.desc), safeLogic=escapeHtml(p.logic||'');
+ return `<div class="project-detail-one"><div class="project-top-card"><div class="project-mini-icon">${p.icon}</div><div><span class="tag blue">${LT(p.cat)}</span><h2 style="margin-top:8px">${safeTitle}</h2><p class="small" style="margin-top:6px">${safeDesc}</p><div class="tagrow">${(p.tags||[]).map(t=>`<span class="tag blue">${LT(t)}</span>`).join('')}</div><p class="small" style="margin-top:12px"><strong>${LT('Application logic')}:</strong> ${safeLogic}</p></div></div>${projectDocTabs(p,active)}<div class="project-doc-content">${projectDocHtml(p,active)}</div></div>`;
+}
+function openProjectDoc(slug,type='privacy',setHash=false){
+ const p=projects.find(x=>projectSlug(x)===slug) || projects[0];
+ if(!p)return;
+ if(setHash)setProjectHash(p,type);
+ modalTitle.textContent=`${p.title} · ${projectDocLabel(type)}`;
+ modal.classList.remove('feng-modal');
+ modalBody.innerHTML=projectDetailTemplate(p,type);
+ modal.classList.add('open');
+}
+function carolineModalTemplate(p){return projectDetailTemplate(p,'privacy')}
+function openCarolinePolicy(type='privacy',setHash=false){openProjectDoc('caroline',type,setHash)}
+function parseProjectDocHash(id){
+ if(!id)return null;
+ if(id==='caroline-pervicay_terms' || id==='caroline-privacy_terms')return {slug:'caroline',type:'privacy'};
+ const m=id.match(/^([a-z0-9-]+)-(privacy|terms|support)$/);
+ return m?{slug:m[1],type:m[2]}:null;
+}
+function handlePolicyHash(){
+ const parsed=parseProjectDocHash((location.hash||'').replace('#',''));
+ if(parsed){showPage('portfolio');openProjectDoc(parsed.slug,parsed.type,false);return true}
+ return false;
+}
 
 function fengShuiModalTemplate(p){return `<div class="project-modal-grid"><div class="project-panel"><div class="project-hero-mini"><div class="project-mini-icon">☯</div><div><span class="tag blue">${LT(p.cat)}</span><h2>${LT('FengShui & BaZi')}</h2><p class="small">${LT('Daily Chinese almanac preview with personal BaZi testing.')}</p></div></div><div style="margin-top:18px"><div class="fs-day">${LT('Thursday, May 14, 2026')}</div><div class="fs-lunar">农历 四月十五</div><div class="fs-pillars"><span class="fs-pillar">年柱 丙午</span><span class="fs-pillar">月柱 壬午</span><span class="fs-pillar">日柱 戊子</span></div></div><div class="fortune-grid"><div class="fortune-box"><h4>${LT('✅ Favorable Today · 今日宜')}</h4><ul><li>${LT('Real estate deals')}</li><li>${LT('Construction start')}</li><li>${LT('Business negotiations')}</li><li>${LT('Family gatherings')}</li><li>${LT('Meditation')}</li></ul></div><div class="fortune-box bad"><h4>${LT('⛔ Avoid Today · 今日忌')}</h4><ul><li>${LT('Breaking ground')}</li><li>${LT('Moving homes')}</li><li>${LT('Starting diets')}</li><li>${LT('Water sports')}</li></ul></div></div></div><div class="project-panel"><h3>${LT('Test your BaZi')}</h3><p class="small" style="margin-top:6px">${LT('Enter birth time and place to generate a BaZi four-pillar profile and today’s destiny reading. Uses real pillar logic; production BaZi uses solar-term calendar precision and timezone handling.')}</p><div class="bazi-form"><div><label>${LT('Birth date')}</label><input id="baziDate" type="date" value="1998-07-22"></div><div><label>${LT('Birth time')}</label><input id="baziTime" type="time" value="12:00"></div><div><label>${LT('Birth place')}</label><input id="baziPlace" type="text" placeholder="e.g. Malmö, Sweden"></div><button class="bazi-btn" onclick="calculateBaziDemo()">${LT('Calculate BaZi')}</button></div><div id="baziResult" class="bazi-result-card" style="display:none"></div></div></div>`}
 
@@ -2716,18 +3184,11 @@ const branches=['子','丑','寅','卯','辰','巳','午','未','申','酉','戌
 const elements={甲:'Wood',乙:'Wood',丙:'Fire',丁:'Fire',戊:'Earth',己:'Earth',庚:'Metal',辛:'Metal',壬:'Water',癸:'Water',子:'Water',丑:'Earth',寅:'Wood',卯:'Wood',辰:'Earth',巳:'Fire',午:'Fire',未:'Earth',申:'Metal',酉:'Metal',戌:'Earth',亥:'Water'};
 function pillarByIndex(n){const i=((n%60)+60)%60;return stems[i%10]+branches[i%12]}
 function calculateBaziDemo(){const d=document.getElementById('baziDate').value;const t=document.getElementById('baziTime').value||'12:00';const place=document.getElementById('baziPlace').value||'Unknown place';if(!d){return}const date=new Date(d+'T'+t);const year=date.getFullYear();const yearP=pillarByIndex(year-1984);const monthP=pillarByIndex((year-1984)*12+date.getMonth()+2);const base=new Date('1984-02-02T00:00:00');const days=Math.floor((date-base)/86400000);const dayP=pillarByIndex(days);const hour=parseInt(t.split(':')[0],10);const branchIdx=Math.floor(((hour+1)%24)/2);const hourP=stems[((days%5)*2+branchIdx)%10]+branches[branchIdx];const all=(yearP+monthP+dayP+hourP).split('');const counts={Wood:0,Fire:0,Earth:0,Metal:0,Water:0};all.forEach(ch=>{if(elements[ch])counts[elements[ch]]++});const strongest=Object.entries(counts).sort((a,b)=>b[1]-a[1])[0][0];const score=Math.min(92,56+counts[strongest]*6+(place.length%9));const weekScore=Math.min(95,Math.max(38,score-7+(days%13)));const monthScore=Math.min(95,Math.max(36,score-4+((date.getMonth()+place.length)%11)));const supportive={Wood:'learning, planning, writing, networks, growth work',Fire:'visibility, presentations, creative launch, social momentum',Earth:'structure, real estate, family alignment, financial grounding',Metal:'contracts, compliance, decision discipline, system cleanup',Water:'research, travel planning, reflection, flexible strategy'}[strongest];document.getElementById('baziResult').style.display='block';document.getElementById('baziResult').innerHTML=`<h4>${LT('Your BaZi profile')}</h4><div class="bazi-pill-row"><span class="bazi-mini-pill">Year 年柱 ${yearP}</span><span class="bazi-mini-pill">Month 月柱 ${monthP}</span><span class="bazi-mini-pill">Day 日柱 ${dayP}</span><span class="bazi-mini-pill">Hour 时柱 ${hourP}</span></div><div class="destiny-meter"><span style="width:${score}%"></span></div><p class="small"><strong>${LT('Dominant element')}:</strong> ${strongest}. <strong>${LT('Today’s tendency')}:</strong> good for structured planning, careful negotiation, family alignment, and quiet reflection. Avoid impulsive relocation, unnecessary conflict, and high-risk water activities.</p><div class="bazi-pill-row"><span class="bazi-mini-pill">Today 今日 ${score}%</span><span class="bazi-mini-pill">${LT('Recent week')} 近七日 ${weekScore}%</span><span class="bazi-mini-pill">${LT('Recent month')} 近一月 ${monthScore}%</span></div><p class="small"><strong>${LT('Recent week')}:</strong> focus on ${supportive}; keep decisions practical and avoid scattered commitments.</p><p class="small"><strong>${LT('Recent month')}:</strong> strongest support comes from steady routines, relationship repair, document cleanup, and disciplined project selection.</p><p class="small" style="margin-top:8px"><strong>${LT('Place context')}:</strong> ${place}. This application uses real pillar logic; production BaZi uses solar-term calendar precision and timezone handling.</p>`}
-function openProjectByIndex(i){const p=projects[i];modalTitle.textContent=p.title;modal.classList.toggle('feng-modal',p.title==='FengShui & BaZi');modalBody.innerHTML=p.title==='FengShui & BaZi'?fengShuiModalTemplate(p):projectDetailTemplate(p);modal.classList.add('open')}
+function openProjectByIndex(i){const p=projects[i];if(!p)return;modalTitle.textContent=p.title;modal.classList.remove('feng-modal');modalBody.innerHTML=projectDetailTemplate(p,'privacy');modal.classList.add('open')}
 function openProject(title){const i=projects.findIndex(x=>x.title===title);openProjectByIndex(i)}function closeModal(){modal.classList.remove('open');modal.classList.remove('feng-modal')}function closeModalOutside(e){if(e.target.id==='modal')closeModal()}
-function boot(){initTabs();renderNews();renderModels();renderRepos();renderPrompts();renderCompass();renderPlaybooks();renderProjects();applyLang();hydrateLiveHub();}
-async function hydrateLiveHub(){
-  const swap=(arr,next)=>{arr.length=0;next.forEach(x=>arr.push(x));};
-  const tryFetch=async(path)=>{try{const r=await fetch(path,{cache:'no-store'});if(!r.ok)return null;const j=await r.json();return j&&j.ok?j:null;}catch(_){return null;}};
-  const [n,r]=await Promise.all([tryFetch('/api/hub/news'),tryFetch('/api/hub/repos')]);
-  if(n&&Array.isArray(n.data)&&n.data.length){swap(news,n.data);hubRefreshState.news=new Date(n.refreshedAt).toLocaleString([], {year:'numeric',month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'});try{renderNews()}catch(_){}}
-  if(r&&Array.isArray(r.data)&&r.data.length){swap(repos,r.data);hubRefreshState.repos=new Date(r.refreshedAt).toLocaleString([], {year:'numeric',month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'});try{renderRepos()}catch(_){}}
-}
-boot();
+function boot(){initTabs();renderNews();renderModels();renderRepos();renderPrompts();renderCompass();renderPlaybooks();renderProjects();applyLang();handlePolicyHash()}boot();window.addEventListener("hashchange",handlePolicyHash);
 
+applyInitialHash();
 </script>
 </body>
 </html>
