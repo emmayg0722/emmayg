@@ -819,9 +819,11 @@ main{flex:1 0 auto}
 
 /* v56 fix: grid/flex items default to min-width:auto, which let horizontally-scrolling
    rows (news filters, tabs, etc.) force their whole grid/flex ancestor chain wider than
-   the viewport on phones. Resetting min-width lets those rows scroll within their own
-   box instead of blowing out the page. */
-*{min-width:0}
+   the viewport on phones. Resetting min-width on layout containers lets those rows
+   scroll within their own box instead of blowing out the page. Scoped to block-level
+   wrapper tags only (not button/a) so the pills and tabs inside those scrolling rows
+   keep their content-based width instead of being squeezed to fit. */
+div,section,article,main,header,footer,nav,ul,ol,li{min-width:0}
 
 </style>
 </head>
