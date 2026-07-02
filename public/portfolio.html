@@ -846,7 +846,7 @@ div,section,article,main,header,footer,nav,ul,ol,li{min-width:0}
         <div class="news-footer" id="newsFooter"><span id="newsCount">0 stories</span> · live · <span id="newsClock">--:--:--</span></div>
       </div>
       <section class="section ai-news-shell compact-list-shell model-shell">
-        <div class="ai-news-top"><div><div class="ai-news-label">Ranked Models & Tools</div><p class="feed-subtitle">Benchmark-oriented model and tool shortlist with access and category filters.</p></div><div style="display:flex;align-items:center;gap:10px"><span class="live-pill">Benchmarked</span><button class="refresh-btn" id="modelRefreshBtn" onclick="manualRefreshModels()" title="Refresh models view" aria-label="Refresh ranked models and tools">↻</button></div></div>
+        <div class="ai-news-top"><div><div class="ai-news-label">Ranked Models & Tools</div><p class="feed-subtitle">Benchmark-oriented model and tool shortlist with access and category filters.</p></div><span class="live-pill">Benchmarked</span></div>
         <div class="model-filter-wrap"><div class="news-filter-row model-filter-row access-row" id="modelAccessFilters"></div><div class="news-filter-row model-filter-row category-row" id="modelCategoryFilters"></div></div>
         <div class="news-feed-box compact-feed model-feed" id="modelRows"></div>
         <div class="news-footer" id="modelFooter"></div>
@@ -859,7 +859,7 @@ div,section,article,main,header,footer,nav,ul,ol,li{min-width:0}
           <div class="news-footer" id="repoFooter"></div>
         </div>
         <div class="ai-news-shell compact-list-shell">
-          <div class="ai-news-top"><div class="ai-news-label">Skills</div><div style="display:flex;align-items:center;gap:10px"><span class="live-pill">Applied</span><button class="refresh-btn" id="skillRefreshBtn" onclick="manualRefreshSkills()" title="Refresh skills view" aria-label="Refresh AI skills">↻</button></div></div>
+          <div class="ai-news-top"><div class="ai-news-label">Skills</div><span class="live-pill">Applied</span></div>
           <div class="news-filter-row" id="skillFilters"></div>
           <div class="news-feed-box compact-feed" id="skillList"></div>
           <div class="news-footer" id="skillFooter"></div>
@@ -2823,9 +2823,9 @@ function hubRefHtml(key){
  const links=(m.links||[]).map(([label,url])=>url==='#'?`<span>${LT(label)}</span>`:`<a href="${url}" target="_blank" rel="noopener">${LT(label)}</a>`).join(' / ');
  return `<button class="footer-info-btn" type="button" onclick="toggleFooterInfo(this)" aria-label="${LT('Data source details')}">i</button><div class="footer-info-pop">${LT(m.ref)}${links?` · ${links}`:''}</div>`;
 }
-function hubFooterHtml(key,countLabel,modeLabel,filterLabel=''){
- const refreshed=hubRefreshState[key];
- return `<span class="footer-meta-primary">${countLabel} · ${modeLabel}${filterLabel?` · ${filterLabel}`:''} · ${LT('Updated')} ${relTimeShort(refreshed)}</span>${hubRefHtml(key)}`;
+function hubFooterHtml(key,countLabel,modeLabel,filterLabel='',isLive=true){
+ const stamp=isLive?`${LT('Updated')} ${relTimeShort(hubRefreshState[key])}`:LT('Curated selection');
+ return `<span class="footer-meta-primary">${countLabel} · ${modeLabel}${filterLabel?` · ${filterLabel}`:''} · ${stamp}</span>${hubRefHtml(key)}`;
 }
 function toggleFooterInfo(btn){
  const pop=btn.nextElementSibling;
@@ -2871,13 +2871,12 @@ function renderModels(){
   catEl.innerHTML=cats.map(c=>`<button class="news-filter ${modelFilterClass(c)} ${((c==='All categories'&&modelCategory==='All')||c===modelCategory)?'active':''}" onclick="setModelFilter('${c}')">${LT(c)}</button>`).join('');
   const visible=models.filter(m=>(modelAccess==='All access'||m[4]===modelAccess.toLowerCase())&&(modelCategory==='All'||m[2]===modelCategory));
   modelRows.innerHTML=visible.map(m=>`<a class="feed-item" href="${m[5]}" target="_blank" rel="noopener"><div><div><span class="feed-source-pill">#${m[0]}</span><span class="feed-title">${LT(m[1])}</span></div><div class="feed-meta"><span class="feed-metric">${LT(m[2])}</span><span>${LT(m[3])}</span><span class="access-badge ${m[4]}">${m[4]==='open'?LT('Open resource'):LT('Closed / hosted')}</span></div></div><span class="feed-arrow">↗</span></a>`).join('');
-  if(!hubRefreshState.models)hubRefreshState.models=hubStamp(); if(window.modelFooter)modelFooter.innerHTML=hubFooterHtml('models',`${visible.length} ${LT('models/tools shown')}`,LT('ranked view'),`${LT('Access')}: ${LT(modelAccess)} · ${LT('Category')}: ${modelCategory==='All'?LT('All categories'):LT(modelCategory)}`)
+  if(window.modelFooter)modelFooter.innerHTML=hubFooterHtml('models',`${visible.length} ${LT('models/tools shown')}`,LT('ranked view'),`${LT('Access')}: ${LT(modelAccess)} · ${LT('Category')}: ${modelCategory==='All'?LT('All categories'):LT(modelCategory)}`,false)
 }
 
 function setModelAccess(a){modelAccess=a;openOnly=a==='Open';renderModels()}
 function setModelFilter(c){modelCategory=c==='All categories'?'All':c;renderModels()}
 function toggleOpenOnly(btn){modelAccess=modelAccess==='Open'?'All access':'Open';openOnly=modelAccess==='Open';btn.textContent=openOnly?'Open resource only':'All access';btn.classList.toggle('active',!openOnly);renderModels()}
-function manualRefreshModels(){const btn=document.getElementById('modelRefreshBtn');btn?.classList.add('spinning');hubRefreshState.models=hubStamp();renderModels();modelRows.scrollTop=0;modelRows.querySelectorAll('.feed-item').forEach((el,i)=>{if(i<3){el.classList.add('flash');setTimeout(()=>el.classList.remove('flash'),900)}});setTimeout(()=>btn?.classList.remove('spinning'),650)}
 function renderRepos(){
  const repoCats=['All',...new Set(repos.map(r=>r[1]))];
  repoFilters.innerHTML=repoCats.map(c=>`<button class="news-filter ${c===repoCategory?'active':''}" onclick="repoCategory='${c}';renderRepos()">${LT(c)}</button>`).join('');
@@ -2888,11 +2887,10 @@ function renderRepos(){
  skillFilters.innerHTML=skillCats.map(c=>`<button class="news-filter ${c===skillCategory?'active':''}" onclick="skillCategory='${c}';renderRepos()">${LT(c)}</button>`).join('');
  const visibleSkills=skills.filter(s=>skillCategory==='All'||s[1]===skillCategory);
  skillList.innerHTML=visibleSkills.map((s,i)=>`<div class="feed-item no-link"><div><div><span class="feed-source-pill">${String(i+1).padStart(2,'0')}</span><span class="feed-title">${LT(s[0])}</span></div><div class="feed-meta"><span class="feed-metric">${LT(s[1])}</span><span>${LT(s[2])}</span><span class="feed-importance">${LT('Skill')}</span></div></div></div>`).join('');
- if(!hubRefreshState.skills)hubRefreshState.skills=hubStamp(); if(window.skillFooter)skillFooter.innerHTML=hubFooterHtml('skills',`${visibleSkills.length} ${LT('skills shown')}`,LT('applied taxonomy'),`${LT('Filter')}: ${LT(skillCategory)}`)
+ if(window.skillFooter)skillFooter.innerHTML=hubFooterHtml('skills',`${visibleSkills.length} ${LT('skills shown')}`,LT('applied taxonomy'),`${LT('Filter')}: ${LT(skillCategory)}`,false)
 }
 
 function manualRefreshRepos(){const btn=document.getElementById('repoRefreshBtn');btn?.classList.add('spinning');hubRefreshState.repos=hubStamp();loadLiveRepos(true).finally(()=>{repoList.scrollTop=0;repoList.querySelectorAll('.feed-item').forEach((el,i)=>{if(i<3){el.classList.add('flash');setTimeout(()=>el.classList.remove('flash'),900)}});btn?.classList.remove('spinning')})}
-function manualRefreshSkills(){const btn=document.getElementById('skillRefreshBtn');btn?.classList.add('spinning');hubRefreshState.skills=hubStamp();renderRepos();skillList.scrollTop=0;skillList.querySelectorAll('.feed-item').forEach((el,i)=>{if(i<3){el.classList.add('flash');setTimeout(()=>el.classList.remove('flash'),900)}});setTimeout(()=>btn?.classList.remove('spinning'),650)}
 function renderPrompts(){
  const cats=['All',...new Set(prompts.map(p=>p.cat))];
  promptFilters.innerHTML=cats.map(c=>`<button class="filter ${c===promptFilter?'active':''}" onclick="promptFilter='${c}';renderPrompts()">${LT(c)}</button>`).join('');
