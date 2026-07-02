@@ -2586,9 +2586,12 @@ const enterpriseKnowledgeDomains=[
  ]}
 ];
 function escapeHtml(s){return String(s).replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
+// For untrusted strings interpolated inside a single-quoted JS string within an inline
+// onclick="..." attribute (e.g. live news/repo data) — escapes backslash and single-quote
+// so the value can't break out of the JS string literal.
+function escapeJsAttr(s){return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'")}
 function renderList(items){return `<ul class="enterprise-bullets">${(items||[]).map(item=>`<li>${escapeHtml(item)}</li>`).join('')}</ul>`}
 function renderSubitems(items,domainId){return `<div class="industry-subitem-list">${(items||[]).map(item=>`<button class="industry-subitem" onclick="openEnterpriseTag('${domainId}','${escapeHtml(item.name)}')"><strong>${escapeHtml(item.name)}</strong><p>${escapeHtml(item.overview||item.summary||'')}</p></button>`).join('')}</div>`}
-function escapeHtml(s){return String(s).replace(/[&<>\"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[m]))}
 function renderEnterpriseKnowledgeMap(){
  const d={}; enterpriseKnowledgeDomains.forEach(x=>d[x.id]=x);
  const node=(cfg)=>`<g class="enterprise-node" onclick="openEnterpriseDomain('${cfg.id}')"><rect class="enterprise-shape" x="${cfg.x}" y="${cfg.y}" width="${cfg.w}" height="${cfg.h}" rx="20" ry="20" fill="${cfg.fill}" stroke="${cfg.stroke}" stroke-width="1.8"/><rect x="${cfg.x+14}" y="${cfg.y+14}" width="74" height="20" rx="10" ry="10" fill="rgba(255,255,255,.72)" stroke="${cfg.stroke}" stroke-opacity=".22"/><text x="${cfg.x+51}" y="${cfg.y+28}" text-anchor="middle" class="enterprise-node-kicker">DOMAIN</text><text x="${cfg.x+18}" y="${cfg.y+52}" class="enterprise-title">${cfg.number?escapeHtml(cfg.number)+' ':''}${escapeHtml(cfg.title)}</text><text x="${cfg.x+18}" y="${cfg.y+73}" class="enterprise-sub">${escapeHtml(cfg.l1)}</text><text x="${cfg.x+18}" y="${cfg.y+91}" class="enterprise-sub">${escapeHtml(cfg.l2)}</text></g>`;
@@ -2850,9 +2853,9 @@ document.addEventListener('click',e=>{
 function renderNews(isManual=false){
   const sources=['All',...new Set(news.map(n=>n.source))];
   const nf=document.getElementById('newsFilters');
-  if(nf) nf.innerHTML=sources.map(src=>`<button class="news-filter ${src===newsSourceFilter?'active':''}" onclick="newsSourceFilter='${src}';renderNews()">${LT(src)}</button>`).join('');
+  if(nf) nf.innerHTML=sources.map(src=>`<button class="news-filter ${src===newsSourceFilter?'active':''}" onclick="newsSourceFilter='${escapeJsAttr(src)}';renderNews()">${LT(escapeHtml(src))}</button>`).join('');
   const shown=news.filter(n=>newsSourceFilter==='All'||n.source===newsSourceFilter).sort((a,b)=>(b.dateRank||0)-(a.dateRank||0)||b.rank-a.rank);
-  newsList.innerHTML=shown.map((n,i)=>`<a class="feed-item ${i===0?'featured':''} ${isManual&&i<3?'flash':''}" href="${n.url}" target="_blank" rel="noopener"><div><div><span class="feed-source-pill">${LT(n.source)}</span><span class="feed-title">${LT(n.title)}</span></div><div class="feed-meta"><span>${LT(n.time)}</span>${n.metric?`<span class="feed-metric">${LT(n.metric)}</span>`:''}<span class="feed-importance ${n.importance==='Critical'?'critical':''}">${LT(n.importance)}</span><span>${LT(n.tag)}</span></div></div><span class="feed-arrow">↗</span></a>`).join('');
+  newsList.innerHTML=shown.map((n,i)=>`<a class="feed-item ${i===0?'featured':''} ${isManual&&i<3?'flash':''}" href="${escapeHtml(n.url)}" target="_blank" rel="noopener"><div><div><span class="feed-source-pill">${LT(escapeHtml(n.source))}</span><span class="feed-title">${LT(escapeHtml(n.title))}</span></div><div class="feed-meta"><span>${LT(n.time)}</span>${n.metric?`<span class="feed-metric">${LT(escapeHtml(n.metric))}</span>`:''}<span class="feed-importance ${n.importance==='Critical'?'critical':''}">${LT(n.importance)}</span><span>${LT(n.tag)}</span></div></div><span class="feed-arrow">↗</span></a>`).join('');
   const box=document.getElementById('newsList'); if(box&&isManual) box.scrollTo({top:0,behavior:'smooth'});
   if(isManual || !hubRefreshState.news) hubRefreshState.news=hubStamp();
   const footer=document.getElementById('newsFooter');
@@ -2879,7 +2882,7 @@ function renderModels(){
   accessEl.innerHTML=access.map(a=>`<button class="news-filter access-${a==='All access'?'all':a.toLowerCase()} ${modelAccess===a?'active':''}" onclick="setModelAccess('${a}')">${LT(a)}</button>`).join('');
   catEl.innerHTML=cats.map(c=>`<button class="news-filter ${modelFilterClass(c)} ${((c==='All categories'&&modelCategory==='All')||c===modelCategory)?'active':''}" onclick="setModelFilter('${c}')">${LT(c)}</button>`).join('');
   const visible=models.filter(m=>(modelAccess==='All access'||m[4]===modelAccess.toLowerCase())&&(modelCategory==='All'||m[2]===modelCategory));
-  modelRows.innerHTML=visible.map(m=>`<a class="feed-item" href="${m[5]}" target="_blank" rel="noopener"><div><div><span class="feed-source-pill">#${m[0]}</span><span class="feed-title">${LT(m[1])}</span></div><div class="feed-meta"><span class="feed-metric">${LT(m[2])}</span><span>${LT(m[3])}</span><span class="access-badge ${m[4]}">${m[4]==='open'?LT('Open resource'):LT('Closed / hosted')}</span></div></div><span class="feed-arrow">↗</span></a>`).join('');
+  modelRows.innerHTML=visible.map(m=>`<a class="feed-item" href="${escapeHtml(m[5])}" target="_blank" rel="noopener"><div><div><span class="feed-source-pill">#${m[0]}</span><span class="feed-title">${LT(escapeHtml(m[1]))}</span></div><div class="feed-meta"><span class="feed-metric">${LT(m[2])}</span><span>${LT(escapeHtml(m[3]))}</span><span class="access-badge ${m[4]}">${m[4]==='open'?LT('Open resource'):LT('Closed / hosted')}</span></div></div><span class="feed-arrow">↗</span></a>`).join('');
   if(window.modelFooter)modelFooter.innerHTML=hubFooterHtml('models',`${visible.length} ${LT('models/tools shown')}`,LT('ranked view'),`${LT('Access')}: ${LT(modelAccess)} · ${LT('Category')}: ${modelCategory==='All'?LT('All categories'):LT(modelCategory)}`,false)
 }
 
@@ -2890,12 +2893,12 @@ function renderRepos(){
  const repoCats=['All',...new Set(repos.map(r=>r[1]))];
  repoFilters.innerHTML=repoCats.map(c=>`<button class="news-filter ${c===repoCategory?'active':''}" onclick="repoCategory='${c}';renderRepos()">${LT(c)}</button>`).join('');
  const visibleRepos=repos.filter(r=>repoCategory==='All'||r[1]===repoCategory);
- repoList.innerHTML=visibleRepos.map((r,i)=>`<a class="feed-item" href="${r[3]}" target="_blank" rel="noopener"><div><div><span class="feed-source-pill">#${i+1}</span><span class="feed-title">${LT(r[0])}</span></div><div class="feed-meta"><span class="feed-metric">${LT(r[1])}</span><span>${LT(r[2])}</span><span class="feed-importance">${LT('Repo')}</span></div></div><span class="feed-arrow">↗</span></a>`).join('');
+ repoList.innerHTML=visibleRepos.map((r,i)=>`<a class="feed-item" href="${escapeHtml(r[3])}" target="_blank" rel="noopener"><div><div><span class="feed-source-pill">#${i+1}</span><span class="feed-title">${LT(escapeHtml(r[0]))}</span></div><div class="feed-meta"><span class="feed-metric">${LT(r[1])}</span><span>${LT(escapeHtml(r[2]))}</span><span class="feed-importance">${LT('Repo')}</span></div></div><span class="feed-arrow">↗</span></a>`).join('');
  if(!hubRefreshState.repos)hubRefreshState.repos=hubStamp(); if(window.repoFooter)repoFooter.innerHTML=hubFooterHtml('repos',`${visibleRepos.length} ${LT('repositories shown')}`,LT('GitHub snapshot'),`${LT('Filter')}: ${LT(repoCategory)}`);
  const skillCats=['All',...new Set(skills.map(s=>s[1]))];
  skillFilters.innerHTML=skillCats.map(c=>`<button class="news-filter ${c===skillCategory?'active':''}" onclick="skillCategory='${c}';renderRepos()">${LT(c)}</button>`).join('');
  const visibleSkills=skills.filter(s=>skillCategory==='All'||s[1]===skillCategory);
- skillList.innerHTML=visibleSkills.map((s,i)=>`<div class="feed-item no-link"><div><div><span class="feed-source-pill">${String(i+1).padStart(2,'0')}</span><span class="feed-title">${LT(s[0])}</span></div><div class="feed-meta"><span class="feed-metric">${LT(s[1])}</span><span>${LT(s[2])}</span><span class="feed-importance">${LT('Skill')}</span></div></div></div>`).join('');
+ skillList.innerHTML=visibleSkills.map((s,i)=>`<div class="feed-item no-link"><div><div><span class="feed-source-pill">${String(i+1).padStart(2,'0')}</span><span class="feed-title">${LT(escapeHtml(s[0]))}</span></div><div class="feed-meta"><span class="feed-metric">${LT(s[1])}</span><span>${LT(escapeHtml(s[2]))}</span><span class="feed-importance">${LT('Skill')}</span></div></div></div>`).join('');
  if(window.skillFooter)skillFooter.innerHTML=hubFooterHtml('skills',`${visibleSkills.length} ${LT('skills shown')}`,LT('applied taxonomy'),`${LT('Filter')}: ${LT(skillCategory)}`,false)
 }
 
@@ -2928,10 +2931,10 @@ function toolBot(){
   const skill=toolBotPick(skills,s=>`${s[0]} ${s[1]} ${s[2]}`,terms);
   const prompt=toolBotPick(prompts,p=>`${p.title} ${p.cat} ${p.prompt}`,terms);
   toolAnswer.innerHTML=`<p>${LT('Pulled from this hub’s own shortlist')}:</p>
-    <p><strong>${LT('Model')}:</strong> <a href="${model[5]}" target="_blank" rel="noopener">${LT(model[1])}</a> — ${LT(model[3])}</p>
-    <p><strong>${LT('Repo')}:</strong> <a href="${repo[3]}" target="_blank" rel="noopener">${LT(repo[0])}</a> — ${LT(repo[2])}</p>
-    <p><strong>${LT('Skill')}:</strong> ${LT(skill[0])} — ${LT(skill[2])}</p>
-    <p><strong>${LT('Prompt')}:</strong> <a href="${prompt.url}" target="_blank" rel="noopener">${LT(prompt.title)}</a> (${LT(prompt.source)})</p>`;
+    <p><strong>${LT('Model')}:</strong> <a href="${escapeHtml(model[5])}" target="_blank" rel="noopener">${LT(escapeHtml(model[1]))}</a> — ${LT(escapeHtml(model[3]))}</p>
+    <p><strong>${LT('Repo')}:</strong> <a href="${escapeHtml(repo[3])}" target="_blank" rel="noopener">${LT(escapeHtml(repo[0]))}</a> — ${LT(escapeHtml(repo[2]))}</p>
+    <p><strong>${LT('Skill')}:</strong> ${LT(escapeHtml(skill[0]))} — ${LT(escapeHtml(skill[2]))}</p>
+    <p><strong>${LT('Prompt')}:</strong> <a href="${escapeHtml(prompt.url)}" target="_blank" rel="noopener">${LT(escapeHtml(prompt.title))}</a> (${LT(escapeHtml(prompt.source))})</p>`;
 }
 
 
@@ -3354,7 +3357,7 @@ async function fetchLiveRecentPapers(force){
 }
 function renderRecentPapers(){
   if(!recentPapersList)return;
-  recentPapersList.innerHTML=recentPapers.length?recentPapers.map(p=>`<a class="feed-item" href="${p.url}" target="_blank" rel="noopener"><div><div><span class="feed-source-pill">arXiv</span><span class="feed-title">${LT(p.title)}</span></div><div class="feed-meta"><span>${LT(p.time)}</span><span class="feed-metric">${p.points} pts</span></div></div><span class="feed-arrow">↗</span></a>`).join(''):`<div class="feed-item no-link"><div><span class="feed-title">${LT('No recent papers loaded yet — see the curated papers below, or use refresh.')}</span></div></div>`;
+  recentPapersList.innerHTML=recentPapers.length?recentPapers.map(p=>`<a class="feed-item" href="${escapeHtml(p.url)}" target="_blank" rel="noopener"><div><div><span class="feed-source-pill">arXiv</span><span class="feed-title">${LT(escapeHtml(p.title))}</span></div><div class="feed-meta"><span>${LT(p.time)}</span><span class="feed-metric">${p.points} pts</span></div></div><span class="feed-arrow">↗</span></a>`).join(''):`<div class="feed-item no-link"><div><span class="feed-title">${LT('No recent papers loaded yet — see the curated papers below, or use refresh.')}</span></div></div>`;
   if(!hubRefreshState.recentPapers)hubRefreshState.recentPapers=hubStamp();
   if(recentPapersFooter)recentPapersFooter.innerHTML=hubFooterHtml('recentPapers',`${recentPapers.length} ${LT('papers shown')}`,LT('live'));
 }
