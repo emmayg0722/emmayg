@@ -879,7 +879,14 @@ div,section,article,main,header,footer,nav,ul,ol,li{min-width:0}
   <div class="compass-tabs" id="compassTabs"></div>
   <div id="glossary" class="compass-panel active"><div class="grid three" id="glossaryGrid"></div></div>
   <div id="courses" class="compass-panel"><div class="grid two" id="courseGrid"></div></div>
-  <div id="papers" class="compass-panel"><div class="grid two" id="paperGrid"></div></div>
+  <div id="papers" class="compass-panel">
+    <section class="ai-news-shell compact-list-shell" style="margin-bottom:18px">
+      <div class="ai-news-top"><div><div class="ai-news-label">Recent Papers</div><p class="feed-subtitle">Live — recent AI research getting discussed on Hacker News, filtered to arXiv links.</p></div><div style="display:flex;align-items:center;gap:10px"><span class="live-pill"><span class="live-dot"></span>Live</span><button class="refresh-btn" id="recentPapersRefreshBtn" onclick="manualRefreshRecentPapers()" title="Refresh recent papers" aria-label="Refresh recent papers">↻</button></div></div>
+      <div class="news-feed-box compact-feed" id="recentPapersList"></div>
+      <div class="news-footer" id="recentPapersFooter"></div>
+    </section>
+    <div class="grid two" id="paperGrid"></div>
+  </div>
   <div id="regs" class="compass-panel"><div class="split"><div><div class="grid two" id="regGrid"></div></div><aside class="robot compliance-officer"><div class="robot-title"><span class="bot-face">⚖️</span><span>AI compliance officer</span></div><div class="multi-dropdown" id="complianceRegionSelect"><button class="multi-select-btn" type="button" onclick="toggleRegionMenu(event)"><span id="regionSelectLabel">EU</span><span class="multi-select-caret">⌄</span></button><div class="multi-select-menu" id="regionMenu"><label class="multi-option"><input type="checkbox" value="EU" checked onchange="toggleComplianceRegion('EU')"> EU</label><label class="multi-option"><input type="checkbox" value="UK" onchange="toggleComplianceRegion('UK')"> UK</label><label class="multi-option"><input type="checkbox" value="US" onchange="toggleComplianceRegion('US')"> US</label><label class="multi-option"><input type="checkbox" value="China" onchange="toggleComplianceRegion('China')"> China</label><label class="multi-option"><input type="checkbox" value="Singapore" onchange="toggleComplianceRegion('Singapore')"> Singapore</label><label class="multi-option"><input type="checkbox" value="Global" onchange="toggleComplianceRegion('Global')"> Global</label></div></div><input type="hidden" id="complianceRegion" value="EU" /><textarea id="complianceText" placeholder="Example: Swedish fintech uses an AI model to rank loan applicants, detect fraud, and generate customer explanations."></textarea><button class="pill-btn primary" onclick="complianceBot()">Map obligations</button><div class="answer compliance-result" id="complianceAnswer">Add a region and use case to get a clean regulation map: relevant regulation, chapter/article, why it matters, and first actions.</div></aside></div></div>
   <div id="history" class="compass-panel"><div class="timeline" id="historyList"></div></div>
   <div id="landscape" class="compass-panel"><div class="grid three" id="landscapeGrid"></div></div>
@@ -1018,6 +1025,7 @@ var modelAccessFilters=byId('modelAccessFilters'), modelCategoryFilters=byId('mo
 var repoFilters=byId('repoFilters'), repoList=byId('repoList'), repoFooter=byId('repoFooter'), skillFilters=byId('skillFilters'), skillList=byId('skillList'), skillFooter=byId('skillFooter');
 var promptFilters=byId('promptFilters'), promptGrid=byId('promptGrid'), compassSearch=byId('compassSearch'), compassTabs=byId('compassTabs');
 var glossaryGrid=byId('glossaryGrid'), courseGrid=byId('courseGrid'), paperGrid=byId('paperGrid'), regGrid=byId('regGrid'), historyList=byId('historyList'), landscapeGrid=byId('landscapeGrid');
+var recentPapersList=byId('recentPapersList'), recentPapersFooter=byId('recentPapersFooter');
 var industryDrilldown=byId('industryDrilldown'), playbookGrid=byId('playbookGrid'), projectFilters=byId('projectFilters'), projectShelf=byId('projectShelf');
 var modal=byId('modal'), modalTitle=byId('modalTitle'), modalBody=byId('modalBody');
 var purposeBot=byId('purposeBot'), toolAnswer=byId('toolAnswer'), complianceRegion=byId('complianceRegion'), complianceText=byId('complianceText'), complianceAnswer=byId('complianceAnswer'), regionMenu=byId('regionMenu'), regionSelectLabel=byId('regionSelectLabel');
@@ -2788,6 +2796,7 @@ function rerenderLocalized(){
   try{renderRepos()}catch(e){}
   try{renderPrompts()}catch(e){}
   try{renderCompass()}catch(e){}
+  try{renderRecentPapers()}catch(e){}
   try{renderPlaybooks()}catch(e){}
   try{renderProjects()}catch(e){}
   localizeStatic();
@@ -2799,9 +2808,10 @@ const hubDataMeta={
  news:{updated:'June 06, 2026',ref:'Live headlines pulled from Hacker News (Algolia API), filtered to AI-related stories · ranked by newest + points',links:[['Hacker News','https://news.ycombinator.com/']]},
  models:{updated:'June 06, 2026',ref:'Updated from Artificial Analysis Intelligence Index, LMArena overview, OpenRouter usage rankings, access type, category fit, and product usefulness',links:[['Artificial Analysis','https://artificialanalysis.ai/leaderboards/models'],['LMArena','https://huggingface.co/spaces/lmarena-ai/arena-leaderboard'],['OpenRouter','https://openrouter.ai/']]},
  repos:{updated:'June 06, 2026',ref:'Live from the GitHub Search API · repos tagged "ai", pushed in the last 30 days, sorted by stars',links:[['GitHub Trending','https://github.com/trending'],['GitHub AI Topic','https://github.com/topics/ai']]},
- skills:{updated:'June 06, 2026',ref:'Curated applied AI skills from prompt engineering, enterprise AI workflows, and practical AI product delivery',links:[['OpenAI Prompting','https://developers.openai.com/api/docs/guides/prompt-engineering'],['Prompt Engineering Guide','https://www.promptingguide.ai/']]}
+ skills:{updated:'June 06, 2026',ref:'Curated applied AI skills from prompt engineering, enterprise AI workflows, and practical AI product delivery',links:[['OpenAI Prompting','https://developers.openai.com/api/docs/guides/prompt-engineering'],['Prompt Engineering Guide','https://www.promptingguide.ai/']]},
+ recentPapers:{updated:'June 06, 2026',ref:'Live from Hacker News (Algolia API), filtered to stories linking to arxiv.org · ranked by newest',links:[['arXiv cs.AI','https://arxiv.org/list/cs.AI/recent']]}
 };
-const hubRefreshState={news:null,models:null,repos:null,skills:null};
+const hubRefreshState={news:null,models:null,repos:null,skills:null,recentPapers:null};
 function hubStamp(){return new Date().toLocaleString([], {year:'numeric',month:'short',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'});}
 function hubRefHtml(key){
  const m=hubDataMeta[key];
@@ -3268,7 +3278,56 @@ async function loadLiveRepos(isManual=false){
   renderRepos();
 }
 
-function boot(){initTabs();renderNews();renderModels();renderRepos();renderPrompts();renderCompass();renderPlaybooks();renderProjects();applyLang();handlePolicyHash();loadLiveNews();loadLiveRepos()}boot();window.addEventListener("hashchange",handlePolicyHash);
+// Recent Papers (AI Compass): live, sourced from Hacker News discussions linking to arXiv.
+// arXiv's own API does not send CORS headers, so it can't be called directly from a browser —
+// HN's Algolia search is the keyless, CORS-open option, same as the AI News feed above.
+// There's no curated fallback list for this one (it's additive to the foundational papers
+// grid below it), so a failed/empty fetch just shows a quiet placeholder instead of blank space.
+let recentPapers=[];
+async function fetchLiveRecentPapers(force){
+  if(!force){const cached=liveCacheGet('liveRecentPapersCache');if(cached)return cached}
+  const url=`https://hn.algolia.com/api/v1/search_by_date?query=${encodeURIComponent('arxiv.org')}&tags=story&numericFilters=points%3E1&hitsPerPage=50`;
+  const res=await fetch(url);
+  if(!res.ok)throw new Error('HN '+res.status);
+  const json=await res.json();
+  const hits=(json.hits||[]).filter(h=>/arxiv\.org/i.test(h.url||h.story_url||''));
+  const seen=new Set(),items=[];
+  for(const h of hits){
+    if(seen.has(h.objectID))continue; seen.add(h.objectID);
+    const title=h.title||h.story_title||''; if(!title)continue;
+    const link=h.url||h.story_url;
+    const pts=h.points??0, created=h.created_at_i??Date.now()/1000;
+    const diff=Date.now()/1000-created;
+    const time=diff<3600?`${Math.max(1,Math.round(diff/60))}m ago`:diff<86400?`${Math.round(diff/3600)}h ago`:diff<86400*2?'Today':`${Math.round(diff/86400)}d ago`;
+    items.push({title,url:link,time,points:pts,dateRank:created});
+  }
+  items.sort((a,b)=>b.dateRank-a.dateRank);
+  const data=items.slice(0,12);
+  if(data.length)liveCacheSet('liveRecentPapersCache',data);
+  return data;
+}
+function renderRecentPapers(){
+  if(!recentPapersList)return;
+  recentPapersList.innerHTML=recentPapers.length?recentPapers.map(p=>`<a class="feed-item" href="${p.url}" target="_blank" rel="noopener"><div><div><span class="feed-source-pill">arXiv</span><span class="feed-title">${LT(p.title)}</span></div><div class="feed-meta"><span>${LT(p.time)}</span><span class="feed-metric">${p.points} pts</span></div></div><span class="feed-arrow">↗</span></a>`).join(''):`<div class="feed-item no-link"><div><span class="feed-title">${LT('No recent papers loaded yet — see the curated papers below, or use refresh.')}</span></div></div>`;
+  if(!hubRefreshState.recentPapers)hubRefreshState.recentPapers=hubStamp();
+  if(recentPapersFooter)recentPapersFooter.innerHTML=hubFooterHtml('recentPapers',`${recentPapers.length} ${LT('papers shown')}`,LT('live'));
+}
+async function loadLiveRecentPapers(isManual=false){
+  try{
+    const data=await fetchLiveRecentPapers(isManual);
+    if(data&&data.length)recentPapers=data;
+  }catch(e){console.warn('Live recent papers fetch failed',e)}
+  if(isManual)hubRefreshState.recentPapers=hubStamp();
+  renderRecentPapers();
+}
+function manualRefreshRecentPapers(){
+  const btn=document.getElementById('recentPapersRefreshBtn');
+  if(btn){btn.classList.add('spinning');btn.disabled=true;}
+  hubRefreshState.recentPapers=hubStamp();
+  loadLiveRecentPapers(true).finally(()=>{if(btn){btn.classList.remove('spinning');btn.disabled=false;}});
+}
+
+function boot(){initTabs();renderNews();renderModels();renderRepos();renderPrompts();renderCompass();renderRecentPapers();renderPlaybooks();renderProjects();applyLang();handlePolicyHash();loadLiveNews();loadLiveRepos();loadLiveRecentPapers()}boot();window.addEventListener("hashchange",handlePolicyHash);
 
 applyInitialHash();
 </script>
